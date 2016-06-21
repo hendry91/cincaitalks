@@ -1,0 +1,19 @@
+{
+  "name": "cincaitalk",
+  "description": "cincaitalk",
+  "dependencies": {
+    "express": "^4.9.7",
+    "gzippo": "^0.2.0",
+    "logfmt": "^1.2.0"
+  },
+  "dependencies" : {
+    "express"    : "~3.4.4"
+  },
+  "devDependencies": {
+        "phantomjs" : "*",
+        "karma" : "*",
+        "karma-junit-reporter" : "*",    
+        "karma-jasmine" : "*",
+        "karma-ng-scenario" : "*"
+    }
+}

@@ -1,0 +1,79 @@
+/* app css stylesheet */
+
+/*Center body*/
+
+
+/* new start from here, upside all old version, can be remove */
+/* new start from here, upside all old version, can be remove */
+
+
+.btnToLogin:hover, .btnToSignup:hover, .btnLogout:hover
+{
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+.card-img-top
+{
+    height:200px;
+}
+.btnFacebookLogin
+{
+    width:150px !important;
+}
+
+#dpCategories
+{
+    cursor:pointer;
+}
+.row /*overwrite bootstrap due to vertical scrollbar*/
+{
+   margin-right: 0; 
+   margin-left: 0; 
+}
+#pagination
+{
+    cursor:pointer;
+}
+#pagination > .active
+{
+    background:blue;
+}
+.listWrapper > .card-columns > .card > img
+{
+    width:100%;
+}
+
+#my_login_Modal, #my_create_post_Modal, #my_signup_Modal, .middleBreakLine
+{
+    text-align: center;
+}
+
+
+/*prevent kendo UI and bootstrap  conflit*/
+.k-animation-container, .k-widget, .k-widget *, .k-animation-container *, .k-widget *:before, .k-animation-container *:after, .k-block .k-header, .k-list-container {
+    box-sizing: border-box !important; -moz-box-sizing: border-box !important; -webkit-box-sizing: border-box !important;
+}
+
+.btnReadMore:hover, .btnExpand:hover
+{
+    cursor:pointer;
+}
+.container
+{
+    text-align: center;
+}
+
+.cardContent:hover
+{
+    cursor:pointer;
+    border: 1px solid red;
+}
+.btnLiked:hover
+{
+    background: #2626bb;
+}
+.btnDisliked:hover
+{
+    background: #e43d3d;
+}
