@@ -3,8 +3,8 @@ define(['services/services'],
         services.service('deploydService', ['$resource',
             function ($resource) {
 
-                var prefixurl = "http://localhost:2403";
-                //var prefixurl = "http://ec2-52-91-4-159.compute-1.amazonaws.com:9090";
+                //var prefixurl = "http://localhost:2403";
+                var prefixurl = "http://ec2-52-91-4-159.compute-1.amazonaws.com:9090";
 
                 //=============================== AJAX CALLS DEFINITION =====================================================
                 
