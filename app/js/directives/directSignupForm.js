@@ -22,10 +22,10 @@ define(['directives/directives'],
                         $element.find('#inputName').parent().find('.help-block').html('');
                     }
 
-                    var displayName = $element.find('#inputDisplayName').val();
-                    if (displayName == "") {
+                    var displayname = $element.find('#inputDisplayName').val();
+                    if (displayname == "") {
                         return;
-                    } else if (displayName.length < 5 || displayName.length > 15) {
+                    } else if (displayname.length < 5 || displayname.length > 15) {
                         $element.find('#inputDisplayName').parent().find('.help-block').html('Length must between 5 - 15.').css('color', 'red');
                         $scope.errorFree = false;
                         return;
@@ -88,14 +88,15 @@ define(['directives/directives'],
                     if ($scope.errorFree) {
                         var attrs = {};
                         attrs.username = username;
-                        attrs.displayName = displayName;
+                        attrs.displayname = displayname;
                         attrs.email = email;
                         attrs.gender = gender;
-                        attrs.pass = pass;
+                        attrs.password = pass;
+                        attrs.status = "active";
+                        attrs.role = "student";
                         attrs.faculty = faculty;
 
                         deploydService.CreateUser(attrs, function (res) {
-                            console.log($element);
                             if (res.id != undefined) {
                                 $element.modal('hide');
                                 alert('Successful registered, now you may proceed to login.');
@@ -204,17 +205,17 @@ define(['directives/directives'],
 '<div class="help-block with-errors"></div>' +
 '</div>' +
 
-//'<div class="form-group faculty btn-group">' +
-//'<select class="c-select" required>' +
-//'<option selected disabled>Faculty</option>' +
-//'<option value="FASC">FASC</option>' +
-//'<option value="FAFB">FAFB</option>' +
-//'<option value="FEBE">FEBE</option>' +
-//'<option value="FSAH">FSAH</option>' +
-//'<option value="CPUS">CPUS</option>' +
-//'</select>' +
-//'<div class="help-block with-errors"></div>' +
-//'</div>' +
+                //'<div class="form-group faculty btn-group">' +
+                //'<select class="c-select" required>' +
+                //'<option selected disabled>Faculty</option>' +
+                //'<option value="FASC">FASC</option>' +
+                //'<option value="FAFB">FAFB</option>' +
+                //'<option value="FEBE">FEBE</option>' +
+                //'<option value="FSAH">FSAH</option>' +
+                //'<option value="CPUS">CPUS</option>' +
+                //'</select>' +
+                //'<div class="help-block with-errors"></div>' +
+                //'</div>' +
 
 '<div class="modal-footer form-group">' +
 '<button type="submit" class="btn btn-default btnSubmit">Submit</button>' +

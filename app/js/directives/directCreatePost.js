@@ -27,9 +27,9 @@ define(['directives/directives'],
                                 $scope.disableNickname = true;
 
                             } else {
-                                if (res.displayName != undefined) { //deployd login
-                                    $scope.userName = res.displayName;
-                                    $scope.currUser = res.displayName;
+                                if (res.displayname != undefined) { //deployd login
+                                    $scope.userName = res.displayname;
+                                    $scope.currUser = res.displayname;
 
                                     $element.find('.categoriesFieldset > div > .radio-inline').css('color', '');
                                     $element.find('.categoriesFieldset > div > .help-block').html("");

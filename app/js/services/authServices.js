@@ -110,7 +110,7 @@ define(['services/services'],
                                     callback(res);
                                     currUSER = undefined;
                                 } else {
-                                    if (res.displayName != undefined) {
+                                    if (res.displayname != undefined) {
                                         callback(res);
                                         currUSER = res;
                                     } else {

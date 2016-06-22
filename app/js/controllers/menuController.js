@@ -12,11 +12,11 @@
 
                 authServices.GetCurrentUser(function (res) {
                     if (res != -1) {
-                        if (res.displayName != undefined) { //deployd login
+                        if (res.displayname != undefined) { //deployd login
                             $element.find('.logined').show();
                             $element.find('.logouted').hide();
                             $element.find('.logined').removeClass('ng-hide');
-                            $scope.userName = res.displayName;
+                            $scope.userName = res.displayname;
                             $scope.knowUser = true;
                             $scope.unknowUser = false;
                             $scope.loginType = "deployd";

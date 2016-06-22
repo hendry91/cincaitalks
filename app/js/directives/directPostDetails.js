@@ -18,10 +18,10 @@ define(['directives/directives', 'moment'],
                         return;
                     } else {
                         authServices.GetCurrentUser(function (res) {
-                            if (res.displayName != undefined) {
+                            if (res.displayname != undefined) {
                                 var attrs = {};
                                 attrs.postid = content.id;
-                                attrs.displayname = res.displayName;
+                                attrs.displayname = res.displayname;
                                 attrs.username = res.username;
                                 attrs.date = new Date();
 

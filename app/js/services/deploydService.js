@@ -3,7 +3,8 @@ define(['services/services'],
         services.service('deploydService', ['$resource',
             function ($resource) {
 
-                var prefixurl = "http://ec2-52-91-4-159.compute-1.amazonaws.com:9090";
+                var prefixurl = "http://localhost:2403";
+                //var prefixurl = "http://ec2-52-91-4-159.compute-1.amazonaws.com:9090";
 
                 //=============================== AJAX CALLS DEFINITION =====================================================
                 
@@ -116,14 +117,15 @@ define(['services/services'],
                 function createUser(attrs, callback){
                      var request = {
 						username : attrs.username,
-                        displayName : attrs.displayName,
+                        displayname : attrs.displayname,
 						gender : attrs.gender,
                         email : attrs.email,
-						password : attrs.pass,
-                        pass : attrs.pass,
+						password : attrs.password,
+                        pass : attrs.password,
                         faculty : attrs.faculty,
                         date:new Date(),
-                        role: "student"
+                        role: "student",
+                        status: "active"
 					};
                     var user = deploydUser.create(JSON.stringify(request),
 						function (success) { responseSuccess(success, null, callback) },

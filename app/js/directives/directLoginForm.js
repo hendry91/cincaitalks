@@ -16,13 +16,13 @@ define(['directives/directives'],
                     };
 
                     authServices.UserDeploydLogin(attrs, function (res) {
-                        if (res != undefined && res.displayName != undefined) {
+                        if (res != undefined && res.displayname != undefined) {
                             $element.modal('hide');
                             $element.find('#inputName').val('');
                             $element.find('#inputPass').val('');
                             $element.find('.invalidInput').hide();
 
-                            $rootScope.deploydLoginUsername = res.displayName;
+                            $rootScope.deploydLoginUsername = res.displayname;
                             $rootScope.$broadcast('deploydLoginDetails');
 
                         } else {

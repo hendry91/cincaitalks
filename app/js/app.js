@@ -62,6 +62,7 @@ define(['angular',
              .constant('itemPerPage', '12');
             app.config(function ($httpProvider) { //if not this code, deployd get current user have problem
                 $httpProvider.defaults.withCredentials = true;
+                $httpProvider.defaults.useXDomain = true;
             });
             return app;
         });
