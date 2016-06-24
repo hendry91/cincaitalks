@@ -109,11 +109,11 @@ define(['directives/directives', 'moment'],
                         $scope.postContent = content.content;
                         $scope.postDate = $scope.formatFromTodayDate(content.date);
                         $scope.postBy = content.displayname;
-                        $scope.liked = content.liked;
-                        $scope.disliked = content.disliked;
-                        $scope.commented = content.commented;
-                        $scope.shited = content.shited;
-                        $scope.loved = content.loved;
+                        $scope.liked = content.liked.length;
+                        $scope.disliked = content.disliked.length;
+                        $scope.commented = content.commented.length;
+                        $scope.shited = content.shited.length;
+                        $scope.loved = content.loved.length;
                         $scope.postType = content.postType;
                         $element.modal('show');
                     });
