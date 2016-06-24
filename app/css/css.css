@@ -13,10 +13,6 @@
     text-decoration:underline;
 }
 
-.card-img-top
-{
-    height:200px;
-}
 .btnFacebookLogin
 {
     width:150px !important;
@@ -42,6 +38,7 @@
 .listWrapper > .card-columns > .card > img
 {
     width:100%;
+    height:150px;
 }
 
 #my_login_Modal, #my_create_post_Modal, #my_signup_Modal, .middleBreakLine

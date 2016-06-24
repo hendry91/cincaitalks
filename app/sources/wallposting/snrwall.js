@@ -8,7 +8,7 @@
             }
 
             function init(scope, element, attrs) {
-                scope.pageCategories = "snr";
+                scope.pageCategories = "salesnrent";
                 $(element).ready(function () {
                     //console.log(element);
                     kendo.ui.progress(element, true);

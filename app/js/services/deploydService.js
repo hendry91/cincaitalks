@@ -6,6 +6,20 @@ define(['services/services'],
                 //var prefixurl = "http://localhost:2403";
                 var prefixurl = "http://ec2-52-91-4-159.compute-1.amazonaws.com:9090";
 
+                var path = {
+                    other: "other",
+                    complain: "complain",
+                    fnb: "fnb",
+                    sport: "sport",
+                    entertainment: "entertainment",
+                    salesnrent: "salesnrent",
+                    public: "public",
+                    love: "love",
+                    feedback: "feedback",
+                    publicfeedback: "publicfeedback",
+                    comment: "comment"
+                };
+
                 //=============================== AJAX CALLS DEFINITION =====================================================
                 
                 var deploydUser = $resource(prefixurl + "/users/:path/:object", null, {
@@ -20,12 +34,14 @@ define(['services/services'],
                     getbyUsername: {method: 'GET',params: {path:"", object: ""},isArray: true}
                 });
 
-                var createPosting = $resource(prefixurl + "/:path/:object", null, {
-                    create: { method: 'POST', params: { path:"", object: ""} }
+                var create = $resource(prefixurl + "/:path/:object", null, {
+                    createPosting: { method: 'POST', params: { path:"", object: ""} },
+                    createFeedb: { method: 'POST', params: { path:"", object: ""} },
+                    createComment: { method: 'POST', params: { path:"", object: ""} }
                 });
 
-                var feedback = $resource(prefixurl + "/:path/:object", null, {
-                    create: { method: 'POST', params: { path:"", object: ""} }
+                var comment = $resource(prefixurl + "/comment?:object", null, {
+                    getCommentbyId: {method: 'GET',params: {object: ""},isArray: true}
                 });
 
                   //EXAMPLE : 
@@ -71,7 +87,7 @@ define(['services/services'],
                 function getPostbyLimit(attrs, type, callback) {
                     var objectSort = {};
                     objectSort[attrs.sortCategories] = attrs.sortType;
-
+                    var type = path[type];
                     var request = {
                         $limit: attrs.limit, 
                         $skip: attrs.skip,
@@ -86,7 +102,8 @@ define(['services/services'],
 
                 function getPostbyUsername(name, type, callback) {
 
-                    var request = "username=" + name
+                    var request = "username=" + name;
+                    var type = path[type];
 
                     var userList = postRequest.getbyUsername({path : type}, {object : request},
         	            function (success) { responseSuccess(success, null, callback) },
@@ -94,25 +111,56 @@ define(['services/services'],
                 };
 
                 function createPost(attrs, type, callback) {
-
                     var request = {
 						username : attrs.username,
                         displayname : attrs.displayname,
                         title: attrs.title,
 						content : attrs.content,
 						image : attrs.image,
-                        liked: attrs.liked,
-                        commented: attrs.commented,
-                        shited: attrs.shited,
-                        loved: attrs.loved,
-                        disliked: attrs.disliked,
+                        liked: [],
+                        disliked: [],
+                        loved: [],
+                        shited: [],
+                        commented: [],
 						date : attrs.date
 					};
+
+                    var type = path[type];
 					
-					var create = createPosting.create({path : type}, JSON.stringify(request),
+					var createP = create.createPosting({path : type}, JSON.stringify(request),
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 };
+
+                 function createComment(attrs, type, callback) {
+                    var request = {
+                        postid : attrs.postid,
+						username : attrs.username,
+                        displayname : attrs.displayname,
+						date : attrs.date,
+                        content: attrs.content,
+                        categories:attrs.categories,
+                        nickname:attrs.nickname
+					};
+                    var type = path[type];
+					
+					var createP = create.createComment({path : type}, JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                };
+
+                function getCommentbyPostid(id, type, callback){
+
+                    var request = {
+                        postid: id, 
+                        $sort: {"date":-1}
+                    };
+
+                    var get = comment.getCommentbyId({ object : JSON.stringify(request)},
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
+
 
                 function createUser(attrs, callback){
                      var request = {
@@ -168,10 +216,11 @@ define(['services/services'],
                     var request = {
 						username : attrs.username,
 						content : attrs.content,
-						date : attrs.date,
+						date : attrs.date
 					};
-					
-					var create = feedback.create({path : type}, JSON.stringify(request),
+					var type = path[type];
+
+					var createP = create.createFeedb({path : type}, JSON.stringify(request),
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 };
@@ -238,6 +287,8 @@ define(['services/services'],
 
 
                     CreatePost: createPost,
+                    CreateComment:createComment, 
+                    GetCommentbyPostid: getCommentbyPostid,
 
                     CreateUser: createUser,
                     UserLogin: userLogin,

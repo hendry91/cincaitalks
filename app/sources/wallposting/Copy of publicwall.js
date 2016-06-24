@@ -1,14 +1,14 @@
 ﻿define(['directives/directives', 'moment'],
     function (directives, moment) {
-        directives.directive('complainwall', ['deploydService', '$compile', '$rootScope', 'itemPerPage', function (deploydService, $compile, $rootScope, itemPerPage) {
+        directives.directive('publicwall', ['deploydService', '$compile', '$rootScope', 'itemPerPage', function (deploydService, $compile, $rootScope, itemPerPage) {
 
             function tableCtrl($scope, $element) {
-                $rootScope.breakLineTitle = "Beh Tahan";
+                $rootScope.breakLineTitle = "Public";
                 $rootScope.$broadcast('setBreakLineTitle');
             }
 
             function init(scope, element, attrs) {
-                scope.pageCategories = "complain";
+                scope.pageCategories = "public";
                 $(element).ready(function () {
                     //console.log(element);
                     kendo.ui.progress(element, true);
@@ -92,7 +92,7 @@
                 }
 
                 function generateSticker(data) {
-                    var dataSource = new kendo.data.DataSource({
+                    scope.dataSource = new kendo.data.DataSource({
                         transport: {
                             read: function (options) {
                                 options.success(data);
@@ -104,14 +104,14 @@
                     if (data.length > itemPerPage) {
                         $("#pager").show();
                         $("#pager").kendoPager({
-                            dataSource: dataSource
+                            dataSource: scope.dataSource
                         });
                     } else {
                         $("#pager").hide();
                     }
 
                     $(element).find(".listWrapper > .card-columns").kendoListView({
-                        dataSource: dataSource,
+                        dataSource: scope.dataSource,
                         template: buldTemp
 
                     });
@@ -128,9 +128,9 @@
 
 
                     function imageWrapper(e) {
-                        return '<div class="card">' +
-                                    '<img class="card-img-top" src="img/seaworld.jpg" alt="Card image cap">' +
-                                    '<div class="card-block ellipsis">' +
+                        return '<div class="card cardContent">' +
+                                    '<img class="card-img-top" src="http://wowslider.com/sliders/demo-22/data1/images/peafowl.jpg" alt="Card image cap">' +
+                                    '<div class="card-block ellipsis ">' +
                                         '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong>' + e.title + '</strong></h5>' +
                                         '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;">' + e.content + '</p>' +
                                         '<p class="card-text"><small class="text-muted">' + formatFromTodayDate(e.date) + '</small></p>' +
@@ -139,14 +139,24 @@
                     }
 
                     function noImageWrapper(e) {
-                        return '<div class="card card-block ellipsis">' +
-                                '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong>' + e.title + '</strong></h5>' +
-                                '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;">' + e.content + '</p>' +
-                                '<p class="card-text"><small class="text-muted">' + formatFromTodayDate(e.date) + ' posted by : ' + e.username + '</small></p>' +
+                        return '<div class="card cardContent">' +
+                                    '<div class="card-block ellipsis">' +
+                                        '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong>' + e.title + '</strong></h5>' +
+                                        '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;">' + e.content + '</p>' +
+                                        '<p class="card-text"><small class="text-muted">' + formatFromTodayDate(e.date) + ' posted by : ' + e.displayname + '</small></p>' +
+                                    '</div>' +
                                 '</div>'
                     }
 
                     kendo.ui.progress(element, false);
+
+                    $(element).find('.cardContent').on('click', function (e) {
+                        var uid = $(e.currentTarget).attr('data-uid');
+                        $rootScope.contentDetails = scope.dataSource.getByUid(uid);
+                        $rootScope.contentDetails.postType = scope.pageCategories;
+                        $rootScope.$broadcast('openPost');
+                    });
+
                 }
             }
 
@@ -156,6 +166,7 @@
                 controller: ['$scope', '$element', tableCtrl],
                 template: '<div class="row listWrapper" style="margin-top:20px">' +
                             '<div class="card-columns">' +
+                                
                             '</div>' +
                             '</div>' +
 

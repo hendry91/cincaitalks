@@ -34,16 +34,16 @@ define(['directives/directives'],
                                 });
                             } else {
                                 var attrs = {};
-                                attrs.username = "Unknown";
+                                attrs.username = "anonymous";
                                 attrs.content = comment;
                                 attrs.date = new Date();
 
-//                                deploydService.CreateFeedback(attrs, "publicfeedback", function (res) {
-//                                    if (res.id != undefined) {
-//                                        alert('feedback form submitted.');
-//                                        $element.find('#comment').val('');
-//                                    }
-//                                });
+                                deploydService.CreateFeedback(attrs, "publicfeedback", function (res) {
+                                    if (res.id != undefined) {
+                                        alert('feedback form submitted.');
+                                        $element.find('#comment').val('');
+                                    }
+                                });
                             }
                         });
 

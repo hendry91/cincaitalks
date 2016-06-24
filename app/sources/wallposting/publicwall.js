@@ -10,8 +10,6 @@
             function init(scope, element, attrs) {
                 scope.pageCategories = "public";
                 $(element).ready(function () {
-                    //console.log(element);
-                    kendo.ui.progress(element, true);
 
                     //for limit the return number
                     var attrs = {
@@ -22,7 +20,14 @@
                     }
 
                     deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
-                        generateSticker(res);
+                        scope.postdb = res;
+
+                        scope.openPost = function (e) {
+                            $rootScope.contentDetails = this.post;
+                            $rootScope.contentDetails.postType = scope.pageCategories;
+                            $rootScope.$broadcast('openPost');
+                        }
+
                         processResize(scope, element);
 
                         $(element).find('.btnReadMore,.btnExpand').on('click', function (e) {
@@ -90,71 +95,6 @@
                         callback(el);
                     }
                 }
-
-                function generateSticker(data) {
-                    scope.dataSource = new kendo.data.DataSource({
-                        transport: {
-                            read: function (options) {
-                                options.success(data);
-                            }
-                        },
-                        pageSize: itemPerPage //12
-                    });
-
-                    if (data.length > itemPerPage) {
-                        $("#pager").show();
-                        $("#pager").kendoPager({
-                            dataSource: scope.dataSource
-                        });
-                    } else {
-                        $("#pager").hide();
-                    }
-
-                    $(element).find(".listWrapper > .card-columns").kendoListView({
-                        dataSource: scope.dataSource,
-                        template: buldTemp
-
-                    });
-
-
-                    function buldTemp(e) {
-
-                        if (e.image != "null") {
-                            return imageWrapper(e);
-                        } else {
-                            return noImageWrapper(e);
-                        }
-                    }
-
-
-                    function imageWrapper(e) {
-                        return '<div class="card">' +
-                                    '<img class="card-img-top" src="img/seaworld.jpg" alt="Card image cap">' +
-                                    '<div class="card-block ellipsis cardContent">' +
-                                        '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong>' + e.title + '</strong></h5>' +
-                                        '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;">' + e.content + '</p>' +
-                                        '<p class="card-text"><small class="text-muted">' + formatFromTodayDate(e.date) + '</small></p>' +
-                                    '</div>' +
-                                '</div>';
-                    }
-
-                    function noImageWrapper(e) {
-                        return '<div class="card card-block ellipsis cardContent">' +
-                                '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong>' + e.title + '</strong></h5>' +
-                                '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;">' + e.content + '</p>' +
-                                '<p class="card-text"><small class="text-muted">' + formatFromTodayDate(e.date) + ' posted by : ' + e.displayname + '</small></p>' +
-                                '</div>'
-                    }
-
-                    kendo.ui.progress(element, false);
-
-                    $(element).find('.cardContent').on('click', function (e) {
-                        var uid = $(e.currentTarget).attr('data-uid');
-                        $rootScope.contentDetails = scope.dataSource.getByUid(uid);
-                        $rootScope.$broadcast('openPost');
-                    });
-
-                }
             }
 
             return {
@@ -163,6 +103,16 @@
                 controller: ['$scope', '$element', tableCtrl],
                 template: '<div class="row listWrapper" style="margin-top:20px">' +
                             '<div class="card-columns">' +
+
+                                '<div class="card cardContent" ng-repeat="post in postdb" ng-click="openPost($event)">' +
+                                    '<img  ng-if="post.image != \'null\'" class="card-img-top" src="http://wowslider.com/sliders/demo-22/data1/images/peafowl.jpg" alt="Card image cap">' +
+                                    '<div class="card-block ellipsis ">' +
+                                        '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong> {{post.title}} </strong></h5>' +
+                                        '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;"> {{post.content}} </p>' +
+                                        '<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}}</small></p>' +
+                                    '</div>' +
+                                '</div>' +
+
                             '</div>' +
                             '</div>' +
 

@@ -15,14 +15,14 @@
 <script data-main="js/main" src="lib/requirejs/require.min.js" type="text/javascript"></script>
 <link href="css/style.css" rel="stylesheet">
 <link href="css/css.css" rel="stylesheet">
-<link href="lib/kendo/kendo.common.min.css" rel="stylesheet" />
-<link href="lib/kendo/kendo.default.min.css" rel="stylesheet" />
+<!--<link href="lib/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="lib/kendo/kendo.default.min.css" rel="stylesheet" />-->
 <link href="css/bootstrap/font-awesome.css" rel="stylesheet" />
 
 </head>
 
 <body>
-<nav class="navbar navbar-light bg-faded navbar-fixed-top" ng-controller='menuController'>
+<nav class="navbar navbar-light bg-faded navbar-fixed-top" ng-controller='menuController' style="height: 50px;">
     <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">&#9776;</button>
     <a class="navbar-brand" ui-sref="publicwall"><strong style="color:#29d846">Test</strong>Guests</a>
     <div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
@@ -63,7 +63,7 @@
             </li>-->
 
         </ul>
-        <form class="form-inline pull-xs-right">
+        <form class="form-inline pull-xs-right" style="margin-bottom: 0;">
             <a href="#" ng-click="createNewPost()"><strong>Create Post</strong></a>
             <span class="logouted"  ng-show="unknowUser"> 
                 <button class="btn btn-sm btn-primary btnFacebookLogin" ng-click="fbAuth('facebook')" type="submit">Login by Facebook</button>
@@ -85,7 +85,7 @@
 
 <div class="container" >
 <!-- Main component for a primary marketing message or call to action -->
-    <div class="jumbotron text-center" style="margin-top:60px;margin-bottom:100px;padding:30px;background:rgba(1,1,1,0.3)">
+    <div class="jumbotron text-center" style="margin-top:50px;margin-bottom:100px;padding:30px;background:rgba(1,1,1,0.3)">
         <h1 style="color:#eee;font-weight:600">Visit <span style="color:rgba(41, 216, 70, 0.8)">New Page</h1>
         <p style="color:#eee">some information here.</p>
     </div>

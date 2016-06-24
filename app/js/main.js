@@ -26,9 +26,10 @@ require.config({
         angularuiroute: '../lib/angular/angular-ui-router.min',
         angularloadingbar: '../lib/angular/loading-bar.min',
         jquery: '../lib/jquery/jquery.min',
+        autogrow: '../lib/jquery/jquery.ns-autogrow.min',
         jqueryui: '../lib/jqueryui/jquery-ui.min',
         domReady: '../lib/requirejs/domReady',
-        kendo: '../lib/kendo/kendo.all.min',
+       // kendo: '../lib/kendo/kendo.all.min',
         bootstrap: '../lib/bootstrap/bootstrap.min',
         masonry: '../lib/masonry/masonry.pkgd.min',
         twbsPagination: '../lib/bootstrap/twbsPagination',
@@ -68,14 +69,17 @@ require.config({
         angularuiroute: {
             deps: ['angular']
         },
-        kendo: {
-            deps: ['jquery', 'jqueryui', 'angular']
-        },
+//        kendo: {
+//            deps: ['jquery', 'jqueryui', 'angular']
+//        },
         bootstrap: {
             deps: ['jquery', 'jqueryui', 'angular', 'masonry']
         },
         twbsPagination: {
             deps: ['jquery', 'jqueryui', 'angular']
+        },
+        autogrow: {
+            deps: ['jquery']
         }
     },
     waitSeconds: 60
@@ -83,13 +87,14 @@ require.config({
 
 require([
 	'angular',
-    'kendo',
+    //'kendo',
 	'app',
     'bootstrap',
     'masonry',
     'twbsPagination',
     'moment',
     'momenttimezone',
+    'autogrow',
     'services/deploydService',
     'services/authServices',
     'controllers/menuController',
@@ -99,14 +104,14 @@ require([
     'directives/directLoginForm',
     'directives/directPostDetails',
     '../sources/wallposting/publicwall',
-    '../sources/wallposting/fnbwall',
-    '../sources/wallposting/complainwall',
-    '../sources/wallposting/entertainmentwall',
-    '../sources/wallposting/lovewall',
-    '../sources/wallposting/otherwall',
-    '../sources/wallposting/sportwall',
-    '../sources/wallposting/snrwall',
-    '../sources/wallposting/lnfwall',
+//    '../sources/wallposting/fnbwall',
+//    '../sources/wallposting/complainwall',
+//    '../sources/wallposting/entertainmentwall',
+//    '../sources/wallposting/lovewall',
+//    '../sources/wallposting/otherwall',
+//    '../sources/wallposting/sportwall',
+//    '../sources/wallposting/snrwall',
+//    '../sources/wallposting/lnfwall',
     '../sources/about/about'
     
 ],

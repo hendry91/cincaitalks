@@ -12,8 +12,8 @@ define(['directives/directives'],
                         $scope.currUser = undefined;
                         authServices.GetCurrentUser(function (res) {
                             if (res == -1) {
-                                $scope.userName = "Unknown, Please login";
-                                $scope.currUser = "Unknown, Please login";
+                                $scope.userName = "anonymous";
+                                $scope.currUser = "anonymous";
                                 $element.find('input#chkNickname').addClass('checked');
 
                                 $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
@@ -34,6 +34,7 @@ define(['directives/directives'],
                                     $element.find('.categoriesFieldset > div > .radio-inline').css('color', '');
                                     $element.find('.categoriesFieldset > div > .help-block').html("");
                                     $element.find('input#chkNickname').removeClass('checked');
+                                    $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
 
                                     $scope.disableCategories = false;
                                     $scope.isCheck = false;
@@ -43,6 +44,7 @@ define(['directives/directives'],
                                 } else if (res.status == "connected") { //facebook login
                                     $scope.userName = res.authResponse.userID;
                                     $scope.currUser = res.authResponse.userID;
+                                    $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
 
                                     $element.find('.categoriesFieldset > div > .radio-inline').css('color', '');
                                     $element.find('.categoriesFieldset > div > .help-block').html("");
@@ -75,8 +77,6 @@ define(['directives/directives'],
                         // event.preventDefault(); // To prevent following the link (optional)
 
                         //$('.categoriesFieldset > .form-group  input:radio:checked') get checked radio
-                        console.log($element);
-
                         var chkNickname = $element.find('input#chkNickname').is(':checked');
 
                         if (chkNickname) {
@@ -111,8 +111,8 @@ define(['directives/directives'],
                             $element.find('.txtComment').parent().find('.help-block').html('');
                         }
 
-                        if ($scope.currUser == "Unknown, Please login") {
-                            var checkedCategories = "Other";
+                        if ($scope.currUser == "anonymous") {
+                            var checkedCategories = "Public";
                         } else {
                             var checkedCategories = $element.find('.categoriesFieldset > .form-group  input:radio:checked').val();
                         }
@@ -160,14 +160,12 @@ define(['directives/directives'],
                     });
 
                     $element.find('.cancelPost').on('click', function (event) {
-
+                        $element.modal('hide');
                     });
-
                 });
 
                 function proceedCreateAPI(attrs, categoriesType) {
                     deploydService.CreatePost(attrs, categoriesType, function (res) {
-                        console.log(res);
                         if (res != undefined && res.id != undefined) {
                             alert("Successful posted.");
                             resetField();
@@ -176,8 +174,7 @@ define(['directives/directives'],
                 }
 
                 function resetField() {
-                    console.log($element);
-                    if ($scope.currUser != "Unknown, Please login") {
+                    if ($scope.currUser != "anonymous") {
                         $element.find('.inputNickname').val('');
                         $element.find('.txtTitle').val('');
                         $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
