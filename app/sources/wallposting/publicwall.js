@@ -109,7 +109,7 @@
                                     '<div class="card-block ellipsis ">' +
                                         '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong> {{post.title}} </strong></h5>' +
                                         '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;"> {{post.content}} </p>' +
-                                        '<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}}</small></p>' +
+                                        '<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by {{post.displayname}}</small></p>' +
                                     '</div>' +
                                 '</div>' +
 

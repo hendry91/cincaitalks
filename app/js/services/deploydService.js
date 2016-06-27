@@ -31,7 +31,8 @@ define(['services/services'],
 
                 var postRequest = $resource(prefixurl + "/:path?:object", null, {
                     getLimit: {method: 'GET',params: {path:"", object: ""},isArray: true},
-                    getbyUsername: {method: 'GET',params: {path:"", object: ""},isArray: true}
+                    getbyUsername: {method: 'GET',params: {path:"", object: ""},isArray: true},
+                    getbyId: {method: 'GET',params: {path:"", object: ""},isArray: false}
                 });
 
                 var create = $resource(prefixurl + "/:path/:object", null, {
@@ -43,6 +44,8 @@ define(['services/services'],
                 var comment = $resource(prefixurl + "/comment?:object", null, {
                     getCommentbyId: {method: 'GET',params: {object: ""},isArray: true}
                 });
+
+
 
                   //EXAMPLE : 
 				  //TRY http://52.2.24.172:9090/users open in browser
@@ -110,6 +113,16 @@ define(['services/services'],
         	            function (error) { responseError(error, callback) });
                 };
 
+                function getPostbyPostid(id, type, callback){
+                    var request = {
+                        id: id
+                    };
+                    var type = path[type];
+                    var get = postRequest.getbyId({ path : type, object : JSON.stringify(request)},
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
+
                 function createPost(attrs, type, callback) {
                     var request = {
 						username : attrs.username,
@@ -121,7 +134,7 @@ define(['services/services'],
                         disliked: [],
                         loved: [],
                         shited: [],
-                        commented: [],
+                        commentedCount: 0,
 						date : attrs.date
 					};
 
@@ -150,7 +163,6 @@ define(['services/services'],
                 };
 
                 function getCommentbyPostid(id, type, callback){
-
                     var request = {
                         postid: id, 
                         $sort: {"date":-1}
@@ -160,7 +172,6 @@ define(['services/services'],
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 }
-
 
                 function createUser(attrs, callback){
                      var request = {
@@ -289,6 +300,8 @@ define(['services/services'],
                     CreatePost: createPost,
                     CreateComment:createComment, 
                     GetCommentbyPostid: getCommentbyPostid,
+                    GetPostbyPostid:getPostbyPostid,
+
 
                     CreateUser: createUser,
                     UserLogin: userLogin,

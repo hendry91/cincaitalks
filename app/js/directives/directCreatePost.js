@@ -83,8 +83,8 @@ define(['directives/directives'],
                             var inputNick = $element.find('.inputNickname').val();
                             if (inputNick == "") {
                                 return;
-                            } else if (inputNick.length < 5 || inputNick.length > 25) {
-                                $element.find('.inputNickname').parent().parent().find('.help-block').html('Length must between 5 - 25.').css('color', 'red');
+                            } else if (inputNick.length < 3 || inputNick.length > 25) {
+                                $element.find('.inputNickname').parent().parent().find('.help-block').html('Length must between 3 - 25.').css('color', 'red');
                                 return;
                             } else {
                                 $element.find('.inputNickname').parent().parent().find('.help-block').html('');
@@ -94,8 +94,8 @@ define(['directives/directives'],
                         var inputTitle = $element.find('.txtTitle').val();
                         if (inputTitle == "") {
                             return;
-                        } else if (inputTitle.length < 5 || inputTitle.length > 30) {
-                            $element.find('.txtTitle').parent().find('.help-block').html('Length must between 5 - 30.').css('color', 'red');
+                        } else if (inputTitle.length < 3 || inputTitle.length > 30) {
+                            $element.find('.txtTitle').parent().find('.help-block').html('Length must between 3 - 30.').css('color', 'red');
                             return;
                         } else {
                             $element.find('.txtTitle').parent().find('.help-block').html('');
@@ -104,8 +104,8 @@ define(['directives/directives'],
                         var inputComment = $element.find('.txtComment').val();
                         if (inputComment == "") {
                             return;
-                        } else if (inputComment.length < 15 || inputComment.length > 1000) {
-                            $element.find('.txtComment').parent().find('.help-block').html('Length must between 15 - 1000.').css('color', 'red');
+                        } else if (inputComment.length < 5 || inputComment.length > 1000) {
+                            $element.find('.txtComment').parent().find('.help-block').html('Length must between 5 - 1000.').css('color', 'red');
                             return;
                         } else {
                             $element.find('.txtComment').parent().find('.help-block').html('');
@@ -123,11 +123,11 @@ define(['directives/directives'],
                             title: inputTitle,
                             content: inputComment,
                             image: "null",
-                            liked: 0,
-                            commented: 0,
-                            shited: 0,
-                            loved: 0,
-                            disliked: 0,
+                            liked: [],
+                            commentedCount: 0,
+                            shited: [],
+                            loved: [],
+                            disliked: [],
                             date: new Date()
                         };
 
