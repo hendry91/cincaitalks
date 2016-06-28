@@ -122,3 +122,15 @@
   margin-top: -32px;
   border: 0;
 }
+
+#overlay
+{
+    position: absolute; 
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    opacity: 0.3;
+    z-index: 99999; /* should be large enough to be on top of everything */
+}

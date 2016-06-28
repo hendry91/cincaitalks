@@ -3,7 +3,6 @@ define(['directives/directives', 'moment'],
         directives.directive('directPostDetails', ['$compile', 'deploydService', '$cookies', 'authServices', '$rootScope', function ($compile, deploydService, $cookies, authServices, $rootScope) {
 
             function init($scope, $element, $attrs) {
-
                 $element.find('.btnSubmit').on('click', function () {
                     var comment = $element.find('#comment').val();
                     if (comment == "") {
@@ -18,17 +17,16 @@ define(['directives/directives', 'moment'],
                             if (res.displayname != undefined) {
                                 var inputNickname = $element.find('.inputNickname').val();
 
-                                if (inputNickname != "") {
-                                    if (inputNickname.length < 3) {
+                                if (inputNickname == "") {
+                                    nickname = res.displayname;
+                                    usenick = false;
+                                } else if (inputNickname.length < 3) {
                                         $element.find('.inputNickname').parent().parent().find('.help-block-input').html('Nickname must more than 3 character.').css('color', 'red');
+                                    return;
                                     } else {
                                         nickname = inputNickname;
                                         usenick = true;
                                     }
-                                } else {
-                                    nickname = res.displayname;
-                                    usenick = false;
-                                }
 
                                 var attrs = {};
                                 attrs.postid = $scope.postid;
@@ -44,39 +42,34 @@ define(['directives/directives', 'moment'],
 
                             } else {
                                 var inputNickname = $element.find('.inputNickname').val();
+                                var attrs = {};
                                 if (inputNickname == "") {
-                                    $element.find('.inputNickname').parent().parent().find('.help-block-input').html('You have no login, Please use a nickname.').css('color', 'red');
-                                    $element.find('input#chkNickname').addClass('checked');
-                                    $scope.isCheck = true;
+                                    attrs.displayname = "anonymous";
+                                    attrs.username = "anonymous";
                                 } else if (inputNickname.length < 3) {
-                                    $element.find('.inputNickname').parent().parent().find('.help-block-input').html('Nickname must more than 3 words.').css('color', 'red');
-                                    $element.find('input#chkNickname').addClass('checked');
-                                    $scope.isCheck = true;
+                                    $element.find('.inputNickname').parent().parent().find('.help-block-input').html('Nickname must more than 3 character.').css('color', 'red');
+                                    return;
                                 } else {
-                                    $element.find('.inputNickname').parent().parent().find('.help-block-input').html('');
-                                    var attrs = {};
-                                    attrs.postid = $scope.postid;
                                     attrs.displayname = inputNickname;
                                     attrs.username = "anonymous";
+                                }
+                                attrs.postid = $scope.postid;
                                     attrs.date = new Date();
                                     attrs.content = comment;
                                     attrs.categories = $scope.postType;
                                     attrs.nickname = true;
                                     createPost(attrs, function (res) {
                                         alert("successful commeted");
-
                                     });
                                 }
-                            }
+                            $element.find('.inputNickname').parent().parent().find('.help-block-input').html('');
                         })
                     }
                 });
 
                 function createPost(attrs, callback) {
-
                     deploydService.CreateComment(attrs, "comment", function (res) {
                         if (res.id != undefined) {
-                            $scope.isCheck = false;
                             $element.find('input#chkNickname').removeClass('checked');
                             $element.find('.inputNickname').val('');
                             $element.find('#comment').val('');
@@ -105,6 +98,7 @@ define(['directives/directives', 'moment'],
                     $rootScope.$on("openPost", function (e) {
                         content = $rootScope.contentDetails;
                         $element.modal('show');
+                        $('#overlay').show();
                         $element.find("#loading-indicator").show();
                         deploydService.GetPostbyPostid(content.id, content.postType, function (res) {
                             $scope.postid = res.id;
@@ -118,6 +112,7 @@ define(['directives/directives', 'moment'],
                             $scope.loved = res.loved.length;
                             $scope.postType = content.postType;
                             $scope.commentedCount = res.commentedCount;
+                            $('#overlay').hide();
                             $element.find("#loading-indicator").hide();
                         });
                     });
@@ -129,6 +124,9 @@ define(['directives/directives', 'moment'],
                     $("#my_postDetails_Modal").on('hidden.bs.modal', function () {
                         $(this).data('bs.modal', null);
                         $element.find('#collapseComment').collapse("hide");
+                        $element.find('.inputNickname').parent().parent().find('.help-block-input').html('');
+                        $element.find('.inputNickname').val('');
+                        $element.find('#comment').val('');
                         $scope.commentdb = [];
                     });
 
@@ -140,7 +138,6 @@ define(['directives/directives', 'moment'],
                                 (remain >= 3) ? $scope.commentLimit += 3 : $scope.commentLimit += remain;
                                 (remain >= 3) ? $scope.remainLength -= 3 : $scope.remainLength -= remain;
                                 ($scope.remainLength > 3) ? $scope.displayAllComment = true : $scope.displayAllComment = false;
-                                //(remain <= 3) ? $scope.displayRefreshbtn = true : $scope.displayRefreshbtn = false;
                                 $scope.displayCollapsebtn = true;
                             }
                             ($scope.commentdb.length > $scope.commentLimit) ? $scope.displayReadmore = true : $scope.displayReadmore = false;
@@ -152,7 +149,6 @@ define(['directives/directives', 'moment'],
                             $scope.remainLength = 0;
                             $scope.displayAllComment = false;
                             $scope.displayReadmore = false;
-                            //$scope.displayRefreshbtn = true;
                             $scope.displayCollapsebtn = true;
                         });
                     }
@@ -166,7 +162,6 @@ define(['directives/directives', 'moment'],
                             } else {
                                 var remain = $scope.commentdb.length - $scope.commentLimit;
                                 (remain > 3) ? $scope.displayAllComment = true : $scope.displayAllComment = false;
-                                //(remain <= 3) ? $scope.displayRefreshbtn = true : $scope.displayRefreshbtn = false;
                                 (($scope.commentdb.length - $scope.commentLimit) > 3) ? $scope.remainLength = $scope.commentdb.length - 3 : $scope.remainLength = $scope.commentdb.length;
                                 ($scope.commentdb.length > $scope.commentLimit) ? $scope.displayReadmore = true : $scope.displayReadmore = false;
                             }
@@ -183,6 +178,16 @@ define(['directives/directives', 'moment'],
 
                     $element.find('#collapseComment').on('show.bs.collapse', function () {
                         $scope.commentLimit = 3;
+                        $('#overlay').show();
+
+                        authServices.GetCurrentUser(function (res) {
+                            if (res == -1) { //no login
+                                $scope.currLoginName = "anonymous";
+                            } else if (res.displayname != undefined) { //deployd login
+                                $scope.currLoginName = res.displayname;
+                            }
+                        });
+
                         $element.find("#loading-indicator").show();
                         deploydService.GetCommentbyPostid($scope.postid, "comment", function (res) {
                             $scope.commentdb = res;
@@ -192,7 +197,7 @@ define(['directives/directives', 'moment'],
                             ($scope.commentdb.length > 3) ? $scope.displayReadmore = true : $scope.displayReadmore = false;
                             ($scope.remainLength > 3) ? $scope.displayAllComment = true : $scope.displayAllComment = false;
                             $element.find("#loading-indicator").hide();
-                            //($scope.commentdb.length <= 3) ? $scope.displayRefreshbtn = true : $scope.displayRefreshbtn = false;
+                            $('#overlay').hide();
                         });
                     });
                 });
@@ -252,13 +257,12 @@ define(['directives/directives', 'moment'],
                                         '<div class="form-group">' +
                                             '<div class="input-group">' +
                                             '<span class="input-group-addon">' +
-                                            '<input type="checkbox" id="chkNickname" aria-label="Checkbox for following text input" ng-checked="isCheck" ng-disabled="disableNickname">Use nickname' +
+                                            '<h6>Comment by : </h6>' +
                                             '</span>' +
-                                            '<input type="text" class="form-control inputNickname" placeholder="Leave it empty if do not want to use nickname" data-minlength="5" maxlength="25" aria-label="Text input with checkbox" ng-disabled="isDisableInputNickname">' +
+                                            '<input type="text" class="form-control inputNickname" ng-model="inputText" placeholder="{{currLoginName}} (You may change this name if you wish to.)" maxlength="25" aria-label="Text input with checkbox" ng-disabled="isDisableInputNickname">' +
                                             '</div>' +
                                             '<div class="help-block-input with-errors"></div>' +
                                         '</div>' +
-
                                         '<button class="btn btn-primary btnSubmit" type="submit">Submit</button>' +
                                     '</div>' +
                                 '</form>' +

@@ -37,7 +37,9 @@ define(['services/services'],
                 var postRequest = $resource(prefixurl + "/:path?:object", null, {
                     getLimit: {method: 'GET',params: {path:"", object: ""},isArray: true},
                     getbyUsername: {method: 'GET',params: {path:"", object: ""},isArray: true},
-                    getbyId: {method: 'GET',params: {path:"", object: ""},isArray: false}
+                    getbyId: {method: 'GET',params: {path:"", object: ""},isArray: false},
+                    remove: { method: 'DELETE', params: {path:"", id : ""} },
+                    update: { method: 'PUT', params: { path:"", object : ""} }
                 });
 
                 var create = $resource(prefixurl + "/:path/:object", null, {
@@ -103,7 +105,7 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
                         $sort: objectSort
                     };
 
-                    var userList = postRequest.getLimit({path : type}, { object : JSON.stringify(request)},
+                    var userList = postRequest.getLimit({path : type, object : JSON.stringify(request)},
         	            function (success) { responseSuccess(success, null, callback) },
         	            function (error) { responseError(error, callback) });
                 };
@@ -141,7 +143,8 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
                         loved: [],
                         shited: [],
                         commentedCount: 0,
-						date : attrs.date
+						date : attrs.date,
+                        status : "A"
 					};
 
                     var type = path[type];
@@ -151,6 +154,15 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
 						function (error) { responseError(error, callback) });
                 };
                 
+				function deletePost(attrs, type, callback){
+                    
+                    var request = attrs;
+					
+					var update = postRequest.update({path : type}, JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
+				
                 function updatePost(attrs, type, callback) {
                     
                     var request = {
@@ -351,6 +363,7 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
                     GetCommentbyPostid: getCommentbyPostid,
                     GetPostbyPostid:getPostbyPostid,
 
+                    DeletePost: deletePost,
 
                     CreateUser: createUser,
                     UpdateUser: updateUser,

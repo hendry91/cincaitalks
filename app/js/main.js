@@ -29,7 +29,6 @@ require.config({
         autogrow: '../lib/jquery/jquery.ns-autogrow.min',
         jqueryui: '../lib/jqueryui/jquery-ui.min',
         domReady: '../lib/requirejs/domReady',
-       // kendo: '../lib/kendo/kendo.all.min',
         bootstrap: '../lib/bootstrap/bootstrap.min',
         masonry: '../lib/masonry/masonry.pkgd.min',
         twbsPagination: '../lib/bootstrap/twbsPagination',
@@ -69,9 +68,7 @@ require.config({
         angularuiroute: {
             deps: ['angular']
         },
-//        kendo: {
-//            deps: ['jquery', 'jqueryui', 'angular']
-//        },
+        
         bootstrap: {
             deps: ['jquery', 'jqueryui', 'angular', 'masonry']
         },
@@ -81,13 +78,13 @@ require.config({
         autogrow: {
             deps: ['jquery']
         }
+        
     },
     waitSeconds: 60
 });
 
 require([
 	'angular',
-    //'kendo',
 	'app',
     'bootstrap',
     'masonry',
