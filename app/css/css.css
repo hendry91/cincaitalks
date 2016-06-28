@@ -82,7 +82,10 @@
 .navbar-nav .nav-item {
   float: none;
 }
-
+.dropdown-menu-right {
+    left: 0;
+    right: auto;
+}
 .navbar-divider,
 .navbar-nav .nav-item+.nav-item,
 .navbar-nav .nav-link + .nav-link {
@@ -103,7 +106,10 @@
   .navbar-right {
     float: right;
   }
-  
+  .dropdown-menu-right {
+    right: 0;
+    left: auto;
+}
 }
 
 #loading-indicator {

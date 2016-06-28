@@ -49,6 +49,15 @@
                 $scope.toSignUp = function () {
                     $element.parent().find('#my_signup_Modal').modal('show');
                 }
+                
+                $scope.userSetting = function (type){
+                    if(type == "password")
+                        $element.parent().find('#my_settingPW_Modal').modal('show');
+                    else{
+                        $element.parent().find('#my_setting_Modal').modal('show');
+                        $rootScope.$broadcast('userSetting');
+                    }
+                }
 
                 $scope.toLogout = function () {
                     if ($scope.loginType == "facebook") {
@@ -103,6 +112,8 @@
                         }
                     });
                 }
+                
+                $element.find(".dropdown").removeClass('open');
 
                 $rootScope.$on("deploydLoginDetails", function (e) {
                     $scope.loginType = "deployd";
@@ -112,6 +123,10 @@
                     $element.parent().find('.logined').show();
                     $element.parent().find('.logined').removeClass('ng-hide');
                     $element.parent().find('.logouted').hide();
+                });
+                
+                $rootScope.$on("deploydLoginDetailsChanged", function (e,result) {
+                    $scope.userName = result.value;
                 });
 
                 //to display like share button

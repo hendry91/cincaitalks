@@ -7,7 +7,8 @@ define(['directives/directives'],
                 $element.find('.btnLogin').on('click', function (event) {
                     event.preventDefault(); // To prevent following the link (optional)
                     event.stopPropagation();
-
+                    $element.find('.invalidInput').hide();
+                    
                     var username = $element.find('#inputName').val().trim();
                     var password = $element.find('#inputPass').val().trim();
                     var attrs = {
@@ -18,11 +19,9 @@ define(['directives/directives'],
                     authServices.UserDeploydLogin(attrs, function (res) {
                         if (res != undefined && res.displayname != undefined) {
                             $element.modal('hide');
-                            $element.find('#inputName').val('');
-                            $element.find('#inputPass').val('');
-                            $element.find('.invalidInput').hide();
 
                             $rootScope.deploydLoginUsername = res.displayname;
+                            $rootScope.deploydLoginUserid = res.username;
                             $rootScope.$broadcast('deploydLoginDetails');
 
                         } else {
@@ -31,13 +30,62 @@ define(['directives/directives'],
                         }
                     });
                 });
+                
+                $element.on("keyup","#inputName , #inputPass",function(e){
+                    if(e.keyCode == 13)
+                        $element.find('.btnLogin').click();
+                });
 
                 $element.find('.btnCancel').on('click', function (event) {
+                    resetInput();
+                });
+                
+                $element.find('.btnRecover').on('click', function (event) {
+                    event.preventDefault(); // To prevent following the link (optional)
+                    event.stopPropagation();
+
+                    var username = $element.find('#recoverInputName').val().trim();
+                    var email = $element.find('#recoverInputEmail').val().trim();
+                    
+                    var attrs = {
+                        attr: "username",
+                        value: username
+                    };
+                    
+                    deploydService.GetUserByAttr(attrs,function(res){
+                        var user = res[0]
+                        if(user != undefined && user.displayname != undefined){
+                            if(user.email.toUpperCase == email.toUpperCase){
+                                console.log("this is correct email")
+                            }else{
+                                alert("incorrect email")
+                            }
+                           
+                        }else{
+                             alert("username does not exist");
+                        }
+                        
+                    });
+                    
+                   
+                });
+                
+                
+                $("#my_login_Modal").on('hidden.bs.modal', function () {
+                    $(this).data('bs.modal', null);
+                    resetInput();
+                    console.debug("closed");
+                });
+                
+                function resetInput(){
                     $element.find('#inputName').val('');
                     $element.find('#inputPass').val('');
+                    $element.find('#recoverInputName').val('');
+                    $element.find('#recoverInputEmail').val('');
                     $element.find('.invalidInput').hide();
-
-                });
+                    $element.find('#collapseRecover').collapse('hide');
+                }
+                
 
             }
             // removed from first div = 'ng-click="showAllIndice()"'
@@ -63,8 +111,25 @@ define(['directives/directives'],
                             '</form>' +
                             '<div class="modal-footer">' +
                             '<label for="invalid" class="invalidInput" style="color:red; display:none;float: left;">Invalid username or password.</label>' +
+                            '<button type="button" class="btn btn-default btnReset" value="Recover" data-toggle="collapse" href="#collapseRecover">Recover Password</button>' +
                             '<button type="submit" class="btn btn-default btnLogin" data-dismiss="modal" value="Login">Login</button>' +
                             '<button type="button" class="btn btn-default btnCancel" data-dismiss="modal">Close</button>' +
+                            '</div>' +
+                            '<div class="collapse" id="collapseRecover">' +
+                                '<form role="form">' +
+                                    '<div class="form-group card-block card">' +
+                                        '<div class="form-group">' +
+                                        '<label for="usr">User Name : </label>' +
+                                        '<input type="text" class="form-control" id="recoverInputName">' +
+                                        '</div>' +
+                                        '<div class="form-group">' +
+                                        '<label for="usr">Email : </label>' +
+                                        '<input type="text" class="form-control" id="recoverInputEmail">' +
+                                        '</div>' +
+                                        '<div class="help-block with-errors"></div>' +
+                                        '<button class="btn btn-primary btnRecover" type="submit">Recover</button>' +
+                                    '</div>' +
+                                '</form>' +
                             '</div>' +
                             '</div>' +
                             '</div></div>',

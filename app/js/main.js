@@ -103,6 +103,7 @@ require([
     'directives/directSignupForm',
     'directives/directLoginForm',
     'directives/directPostDetails',
+    'directives/directUserSetting',
     '../sources/wallposting/publicwall',
 //    '../sources/wallposting/fnbwall',
 //    '../sources/wallposting/complainwall',

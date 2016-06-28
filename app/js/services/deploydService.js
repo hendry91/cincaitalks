@@ -26,7 +26,12 @@ define(['services/services'],
                     getCurr: { method: 'GET', params: { object: "", path:"me"} },
                     login: { method: 'POST', params: { object: "", path:"login"} },
                     logout: { method: 'POST', params: { object: "", path:"logout"} },
-                    create: { method: 'POST', params: { object: ""} }
+                    create: { method: 'POST', params: { object: ""} },
+                    update : { method: 'PUT', params: { object: ""} }
+                });
+                
+                var deploydUserByAttr = $resource(prefixurl + "/users?:attr=:value", null, {
+                    get: { method: 'GET', params: { attr: "", value:""},isArray: true },
                 });
 
                 var postRequest = $resource(prefixurl + "/:path?:object", null, {
@@ -38,7 +43,8 @@ define(['services/services'],
                 var create = $resource(prefixurl + "/:path/:object", null, {
                     createPosting: { method: 'POST', params: { path:"", object: ""} },
                     createFeedb: { method: 'POST', params: { path:"", object: ""} },
-                    createComment: { method: 'POST', params: { path:"", object: ""} }
+                    createComment: { method: 'POST', params: { path:"", object: ""} },
+update: {method : 'PUT' , params:{ path:"",object: ""} }
                 });
 
                 var comment = $resource(prefixurl + "/comment?:object", null, {
@@ -144,6 +150,28 @@ define(['services/services'],
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 };
+                
+                function updatePost(attrs, type, callback) {
+                    
+                    var request = {
+						username : attrs.username,
+                        displayname : attrs.displayname,
+                        title: attrs.title,
+						content : attrs.content,
+						image : attrs.image,
+                        liked: attrs.liked,
+                        commented: attrs.commented,
+                        shited: attrs.shited,
+                        loved: attrs.loved,
+                        disliked: attrs.disliked,
+						date : attrs.date
+					};
+					
+					var update = create.update({path : type,object:attrs.id}, JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                };
+
 
                  function createComment(attrs, type, callback) {
                     var request = {
@@ -190,6 +218,19 @@ define(['services/services'],
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 };
+                
+                function updateUser(attrs,callback){
+                    var request = {
+                        displayname : attrs.displayname,
+                        email : attrs.email,
+                        gender : attrs.gender,
+                        faculty : attrs.faculty,
+                    }
+                    
+                    var user = deploydUser.update({ object:attrs.id },JSON.stringify(request),
+                        function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
 
                 function userLogin(attrs, callback) {
                     var request = {
@@ -232,6 +273,13 @@ define(['services/services'],
 					var type = path[type];
 
 					var createP = create.createFeedb({path : type}, JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                };
+                
+                function getUserByAttr(attrs, callback) {
+                    
+					var User = deploydUserByAttr.get({attr:attrs.attr,value:attrs.value},
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 };
@@ -298,15 +346,18 @@ define(['services/services'],
 
 
                     CreatePost: createPost,
+                    UpdatePost: updatePost,
                     CreateComment:createComment, 
                     GetCommentbyPostid: getCommentbyPostid,
                     GetPostbyPostid:getPostbyPostid,
 
 
                     CreateUser: createUser,
+                    UpdateUser: updateUser,
                     UserLogin: userLogin,
                     UserLogout: userLogout,
-                    GetCurrentUser:getCurrentUser,
+                    GetCurrentUser: getCurrentUser,
+                    GetUserByAttr: getUserByAttr,
 
                     CreateFeedback: createFeedback,
                     //EXAMPLE
