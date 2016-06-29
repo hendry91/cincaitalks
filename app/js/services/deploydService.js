@@ -46,7 +46,7 @@ define(['services/services'],
                     createPosting: { method: 'POST', params: { path:"", object: ""} },
                     createFeedb: { method: 'POST', params: { path:"", object: ""} },
                     createComment: { method: 'POST', params: { path:"", object: ""} },
-                    update: {method : 'PUT' , params:{ path:"",object: ""} }
+update: {method : 'PUT' , params:{ path:"",object: ""} }
                 });
 
                 var comment = $resource(prefixurl + "/comment?:object", null, {
@@ -144,7 +144,8 @@ define(['services/services'],
                         shited: [],
                         commentedCount: 0,
 						date : attrs.date,
-                        status : "A"
+                        status : "A",
+                        usenick: attrs.usenick
 					};
 
                     var type = path[type];
@@ -184,7 +185,7 @@ define(['services/services'],
 						date : attrs.date,
                         content: attrs.content,
                         categories:attrs.categories,
-                        nickname:attrs.nickname
+                        usenick:attrs.usenick
 					};
                     var type = path[type];
 					

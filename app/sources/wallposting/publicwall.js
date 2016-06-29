@@ -11,6 +11,21 @@
 
             function init(scope, element, attrs) {
                 scope.pageCategories = "public";
+                $rootScope.$on("refreshPost", function (e) {
+
+                    if ($rootScope.deploydLoginUsername != undefined) {
+                        scope.currUser = $rootScope.deploydLoginUsername;
+                    } else {
+                        scope.currUser = "anonymous";
+                    }
+                    if ($rootScope.deploydLoginDisplayaname != undefined) {
+                        scope.displayname = $rootScope.deploydLoginDisplayaname;
+                    } else {
+                        scope.displayname = "anonymous";
+                    }
+
+                    refreshPost();
+                });
                 $(element).ready(function () {
                     //for limit the return number
                     var attrs = {
@@ -23,8 +38,10 @@
                     authServices.GetCurrentUser(function (res) {
                         if (res == -1) { //no login
                             scope.currUser = "anonymous";
+                            scope.displayname = "anonymous";
                         } else if (res.username != undefined) { //deployd login
                             scope.currUser = res.username;
+                            scope.displayname = res.displayname;
                         } else { //fb login
 
                         }
@@ -131,6 +148,12 @@
                 };
 
                 function refreshPost() {
+                    var attrs = {
+                        limit: 12, //eg:6 will get 6 post
+                        skip: 0, //skip how many, eg: 1 page 10 post, when click second page, should skip 10 post.
+                        sortCategories: "date",
+                        sortType: -1  //1 for ascending sort (lowest first; A-Z, 0-10) or -1 for descending (highest first; Z-A, 10-0)
+                    }
                     deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
                         scope.postdb = res;
                     });
@@ -189,7 +212,8 @@
                                     '<div class="card-block ellipsis ">' +
                                         '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong> {{post.title}} </strong></h5>' +
                                         '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;"> {{post.content}} </p>' +
-                                        '<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by {{post.displayname}}</small></p>' +
+                                        '<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by {{post.displayname}}'+
+                                        '<i class="fa fa-star-o" aria-hidden="true" style="color:red" ng-if="post.usenick == true" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i></small></p>' +
                                     '</div>' +
                                 '</div>' +
 

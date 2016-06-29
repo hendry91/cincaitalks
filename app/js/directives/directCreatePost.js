@@ -28,7 +28,7 @@ define(['directives/directives'],
 
                             } else {
                                 if (res.displayname != undefined) { //deployd login
-                                    $scope.userName = res.displayname;
+                                    $scope.userName = res.username;
                                     $scope.currUser = res.displayname;
 
                                     $element.find('.categoriesFieldset > div > .radio-inline').css('color', '');
@@ -118,7 +118,7 @@ define(['directives/directives'],
                         }
 
                         var attrs = {
-                            username: $scope.currUser,
+                            username: $scope.userName,
                             displayname: chkNickname ? inputNick : $scope.currUser,
                             title: inputTitle,
                             content: inputComment,
@@ -128,7 +128,8 @@ define(['directives/directives'],
                             shited: [],
                             loved: [],
                             disliked: [],
-                            date: new Date()
+                            date: new Date(),
+                            usenick: (inputNick != undefined) ? true : false
                         };
 
                         switch (checkedCategories) {
@@ -164,11 +165,16 @@ define(['directives/directives'],
                     });
                 });
 
+                $("#my_create_post_Modal").on('hidden.bs.modal', function () {
+                    resetField();
+                });
+
                 function proceedCreateAPI(attrs, categoriesType) {
                     deploydService.CreatePost(attrs, categoriesType, function (res) {
                         if (res != undefined && res.id != undefined) {
                             alert("Successful posted.");
                             resetField();
+                            $rootScope.$broadcast('refreshPost');
                         }
                     });
                 }
@@ -178,15 +184,20 @@ define(['directives/directives'],
                         $element.find('.inputNickname').val('');
                         $element.find('.txtTitle').val('');
                         $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
+                        $element.find('input#chkNickname').prop('checked', false);
                         $element.find('.txtComment').val('');
                         $scope.isCheck = false;
                         $scope.isDisable = true;
-                        $scope.disableNickname = true;
+                        $scope.disableNickname = false;
                     } else {
                         $element.find('.inputNickname').val('');
                         $element.find('.txtTitle').val('');
                         $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
                         $element.find('.txtComment').val('');
+                        $scope.disableNickname = true;
+                        $element.find('input#chkNickname').prop('checked', true);
+                        $scope.isCheck = true;
+                        $scope.isDisable = false;
                     }
                 }
 
@@ -206,7 +217,7 @@ define(['directives/directives'],
                         '</div>' +
 '<form role="form">' +
 '<div class="form-group">' +
-'<label for="usr">Name : {{userName}}</label>' +
+'<label for="usr">Name : {{currUser}}</label>' +
 '</div>' +
 '<div class="form-group">' +
 '<div class="input-group">' +

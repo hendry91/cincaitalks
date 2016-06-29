@@ -20,10 +20,10 @@ define(['directives/directives'],
                         if (res != undefined && res.displayname != undefined) {
                             $element.modal('hide');
 
-                            $rootScope.deploydLoginUsername = res.displayname;
-                            $rootScope.deploydLoginUserid = res.username;
+                            $rootScope.deploydLoginDisplayaname = res.displayname;
+                            $rootScope.deploydLoginUsername = res.username;
                             $rootScope.$broadcast('deploydLoginDetails');
-
+                            $rootScope.$broadcast('refreshPost');
                         } else {
                             $element.find('.invalidInput').show();
                             console.debug("invalid username or password");

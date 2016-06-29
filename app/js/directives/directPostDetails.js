@@ -3,7 +3,6 @@ define(['directives/directives', 'moment'],
         directives.directive('directPostDetails', ['$compile', 'deploydService', '$cookies', 'authServices', '$rootScope', function ($compile, deploydService, $cookies, authServices, $rootScope) {
 
             function init($scope, $element, $attrs) {
-
                 $element.find('.btnSubmit').on('click', function () {
                     var comment = $element.find('#comment').val();
                     if (comment == "") {
@@ -36,7 +35,7 @@ define(['directives/directives', 'moment'],
                                 attrs.date = new Date();
                                 attrs.content = comment;
                                 attrs.categories = $scope.postType;
-                                attrs.nickname = usenick;
+                                attrs.usenick = usenick;
                                 createPost(attrs, function (res) {
                                     alert("successful commeted");
                                 });
@@ -58,7 +57,7 @@ define(['directives/directives', 'moment'],
                                     attrs.date = new Date();
                                     attrs.content = comment;
                                     attrs.categories = $scope.postType;
-                                    attrs.nickname = true;
+                                    attrs.usenick = true;
                                     createPost(attrs, function (res) {
                                         alert("successful commeted");
                                     });
@@ -96,16 +95,18 @@ define(['directives/directives', 'moment'],
                 }
 
                 $($element).ready(function () {
-                    authServices.GetCurrentUser(function (res) {
-                        if(res.username != undefined && res.username != "")
-                            $scope.username = res.username;
-                    });
-                    
                     $rootScope.$on("openPost", function (e) {
                         content = $rootScope.contentDetails;
                         $element.modal('show');
                         $('#overlay').show();
                         $element.find("#loading-indicator").show();
+                        authServices.GetCurrentUser(function (res) {
+                            if (res == -1) { //no login
+                                $scope.currDisplayname = "anonymous";
+                            } else if (res.displayname != undefined) { //deployd login
+                                $scope.currDisplayname = res.displayname;
+                            }
+                       
                         deploydService.GetPostbyPostid(content.id, content.postType, function (res) {
                             $scope.postid = res.id;
                             $scope.postTitle = res.title;
@@ -118,6 +119,7 @@ define(['directives/directives', 'moment'],
                             $scope.loved = res.loved.length;
                             $scope.postType = content.postType;
                             $scope.commentedCount = res.commentedCount;
+                                $scope.usenick = res.usenick;
                             $('#overlay').hide();
                             $element.find("#loading-indicator").hide();
                             
@@ -126,6 +128,7 @@ define(['directives/directives', 'moment'],
                         });
                     });
 
+                });
                     $element.find('#comment').autoGrow({
                         extraLine: true
                     });
@@ -267,7 +270,8 @@ define(['directives/directives', 'moment'],
                             '<div class="modal-header">' +
                             '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
                             '<h4 class="modal-title">{{postTitle}}</h4>' +
-                            '<small class="text-muted"> {{postDate}} was posted by :{{postBy}}</small>' +
+                            '<small class="text-muted"> {{postDate}} was posted by :{{postBy}}'+
+                            '<i class="fa fa-star-o" aria-hidden="true" style="color:red" ng-if="usenick == true" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i></small>' +
                             '</div>' +
                             '<img src="img/loading.gif" id="loading-indicator" style="display:none" />' +
                             '<form role="form">' +

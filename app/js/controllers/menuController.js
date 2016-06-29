@@ -16,7 +16,7 @@
                             $element.find('.logined').show();
                             $element.find('.logouted').hide();
                             $element.find('.logined').removeClass('ng-hide');
-                            $scope.userName = res.displayname;
+                            $scope.displayname = res.displayname;
                             $scope.knowUser = true;
                             $scope.unknowUser = false;
                             $scope.loginType = "deployd";
@@ -24,7 +24,7 @@
                             $element.find('.logined').show();
                             $element.find('.logouted').hide();
                             $element.find('.logined').removeClass('ng-hide');
-                            $scope.userName = res.authResponse.userID;
+                            $scope.displayname = res.authResponse.userID;
                             $scope.knowUser = true;
                             $scope.loginType = "facebook";
                         }
@@ -68,6 +68,9 @@
                                 $element.find('.logouted').removeClass('ng-hide');
                                 $scope.knowUser = false;
                                 $scope.unknowUser = true;
+                                $rootScope.deploydLoginDisplayaname = undefined;
+                                $rootScope.deploydLoginUsername = undefined;
+                                $rootScope.$broadcast('refreshPost');
                             } else {
                                 console.debug('logout error');
                             }
@@ -80,6 +83,9 @@
                                 $element.find('.logouted').removeClass('ng-hide');
                                 $scope.knowUser = false;
                                 $scope.unknowUser = true;
+                                $rootScope.deploydLoginDisplayaname = undefined;
+                                $rootScope.deploydLoginUsername = undefined;
+                                $rootScope.$broadcast('refreshPost');
                             } else {
                                 console.debug('logout error');
                             }
@@ -98,7 +104,7 @@
                             $element.find('.logined').show();
                             $element.find('.logouted').hide();
                             $element.find('.logined').removeClass('ng-hide');
-                            $scope.userName = FB.getUserID();
+                            $scope.displayname = FB.getUserID();
                             $scope.knowUser = true;
                             $scope.unknowUser = false;
                             $scope.loginType = "facebook";
@@ -119,16 +125,16 @@
 
                 $rootScope.$on("deploydLoginDetails", function (e) {
                     $scope.loginType = "deployd";
-                    $scope.userName = $rootScope.deploydLoginUsername;
+                    $scope.displayname = $rootScope.deploydLoginDisplayaname;
                     $scope.knowUser = true;
                     $scope.unknowUser = false;
                     $element.parent().find('.logined').show();
                     $element.parent().find('.logined').removeClass('ng-hide');
                     $element.parent().find('.logouted').hide();
                 });
-                
-                $rootScope.$on("deploydLoginDetailsChanged", function (e,result) {
-                    $scope.userName = result.value;
+
+                $rootScope.$on("deploydLoginDetailsChanged", function (e, result) {
+                    $scope.displayname = result.value;
                 });
 
                 //to display like share button
