@@ -26,7 +26,6 @@ define(['directives/directives'],
                             $rootScope.$broadcast('refreshPost');
                         } else {
                             $element.find('.invalidInput').show();
-                            console.debug("invalid username or password");
                         }
                     });
                 });
@@ -74,7 +73,6 @@ define(['directives/directives'],
                 $("#my_login_Modal").on('hidden.bs.modal', function () {
                     $(this).data('bs.modal', null);
                     resetInput();
-                    console.debug("closed");
                 });
                 
                 function resetInput(){

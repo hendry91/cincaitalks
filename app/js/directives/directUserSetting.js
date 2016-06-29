@@ -4,10 +4,7 @@ define(['directives/directives'],
 
             function init($scope, $element, $attrs) {
                 $($element).ready(function () {
-                    authServices.GetCurrentUser(function (res) {
-                            if(res != undefined && res.username != undefined)
-                                $scope.currUser = angular.copy(res);
-                    });
+                   
                     
                     $rootScope.$on("userSetting", function (e) {
                         $('#overlay').show();
@@ -43,7 +40,12 @@ define(['directives/directives'],
                             changePwBtn.removeClass("disabled");
                         }
                         else{
-                            deploydService.UserLogin({username: $scope.currUser.username,password: oldPassword},function(res){
+                             authServices.GetCurrentUser(function (res) {
+                                var currUser = "";
+                                if(res != undefined && res.username != undefined){
+                                    currUser = angular.copy(res);
+                                    
+                                    deploydService.UserLogin({username: currUser.username,password: oldPassword},function(res){
                                 changePwBtn.removeClass("disabled");
                                 if(res.id == undefined){
                                     $element.find(".help-block").html('Incorrect Old Password').css('color', 'red');
@@ -53,10 +55,9 @@ define(['directives/directives'],
                                     else{
                                         $element.find(".help-block").html('');
                                         var attr = {
-                                            id : $scope.currUser.id,
+                                                    id : currUser.id,
                                             password : cfmNewPassword
                                         }
-                                        
                                         deploydService.UpdateUser(attr,function(res){
                                             alert("Password Changed Sucessful");
                                             changePwBtn.removeClass("disabled");
@@ -65,6 +66,10 @@ define(['directives/directives'],
                                     }
                                 }
                             })
+                        }
+                    });
+                    
+                            
                         }
                     });
                     
