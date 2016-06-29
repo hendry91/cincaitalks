@@ -29,6 +29,9 @@ define(['services/services'],
                     create: { method: 'POST', params: { object: ""} },
                     update : { method: 'PUT', params: { object: ""} }
                 });
+                var fbCheckUser =  $resource(prefixurl + "/users?:object", null, {
+                    check : { method: 'GET', params: { object: ""},isArray: true }
+                });
                 
                 var deploydUserByAttr = $resource(prefixurl + "/users?:attr=:value", null, {
                     get: { method: 'GET', params: { attr: "", value:""},isArray: true },
@@ -215,7 +218,7 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
                         pass : attrs.password,
                         faculty : attrs.faculty,
                         date:new Date(),
-                        role: "student",
+                        role: attrs.role ,
                         status: "active"
 					};
                     var user = deploydUser.create(JSON.stringify(request),
@@ -282,6 +285,13 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 };
+
+                function checkExistingUser(id, callback){
+                    var request = "username=" + id;
+                    var get = fbCheckUser.check({object : request},
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
 
 
                 //EXAMPLE : SRART
@@ -361,6 +371,9 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
                     GetUserByAttr: getUserByAttr,
 
                     CreateFeedback: createFeedback,
+
+                    CheckExistingUser : checkExistingUser,
+
                     //EXAMPLE
                     //RemovePost: removePost,
                   

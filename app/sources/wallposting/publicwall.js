@@ -12,18 +12,15 @@
             function init(scope, element, attrs) {
                 scope.pageCategories = "public";
                 $rootScope.$on("refreshPost", function (e) {
-
-                    if ($rootScope.deploydLoginUsername != undefined) {
-                        scope.currUser = $rootScope.deploydLoginUsername;
-                    } else {
-                        scope.currUser = "anonymous";
-                    }
-                    if ($rootScope.deploydLoginDisplayaname != undefined) {
-                        scope.displayname = $rootScope.deploydLoginDisplayaname;
-                    } else {
-                        scope.displayname = "anonymous";
-                    }
-
+                    authServices.GetCurrentUser(function (res) {
+                        if (res == -1) { //no login
+                            scope.currUser = "anonymous";
+                            scope.displayname = "anonymous";
+                        } else if (res.status == "active") { //deployd login
+                            scope.currUser = res.username;
+                            scope.displayname = res.displayname;
+                        }
+                    });
                     refreshPost();
                 });
                 $(element).ready(function () {
@@ -83,22 +80,21 @@
                         if (res == -1) { //no login
                             scope.currUser = "anonymous";
                             scope.displayname = "anonymous";
-                        } else if (res.username != undefined) { //deployd login
+                        } else if (res.status == "active") { //deployd login
                             scope.currUser = res.username;
                             scope.displayname = res.displayname;
-                        } else { //fb login
-
                         }
-                    deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
-                        scope.postdb = res;
 
-                        scope.openPost = function (e) {
+                        deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
+                            scope.postdb = res;
+
+                            scope.openPost = function (e) {
                                 scope.currentPostTarget = this.post;
                                 if (!$(e.target).hasClass('dropdown-toggle') && !$(e.target).hasClass('dropdown-item')) {
-                            $rootScope.contentDetails = this.post;
-                            $rootScope.contentDetails.postType = scope.pageCategories;
-                            $rootScope.$broadcast('openPost');
-                        }
+                                    $rootScope.contentDetails = this.post;
+                                    $rootScope.contentDetails.postType = scope.pageCategories;
+                                    $rootScope.$broadcast('openPost');
+                                }
 
                                 if ($(e.target).hasClass('dropdown-item') && $(e.target).text() == "Delete") {
                                     if (this.post.username != scope.currUser) {
@@ -106,45 +102,36 @@
                                         window.setTimeout(function () {
                                             element.find('#confirm-delete').modal('hide');
                                         }, 0);
-                                    } else {
-
-                                        //                                        var attrs = { id: this.post.id, status: "D" }
-                                        //                                        deploydService.DeletePost(attrs, scope.pageCategories, function (res) {
-                                        //                                            if (res.status = "D") {
-                                        //                                                alert("your post has been deleted.");
-                                        //                                                refreshPost();
-                                        //                                            }
-                                        //                                        });
                                     }
                                 }
                             }
 
-                        processResize(scope, element);
+                            processResize(scope, element);
 
-                        $(element).find('.btnReadMore,.btnExpand').on('click', function (e) {
-                            console.log(e);
-                            var target = e.currentTarget.text;
+                            $(element).find('.btnReadMore,.btnExpand').on('click', function (e) {
+                                console.log(e);
+                                var target = e.currentTarget.text;
 
-                            switch (target) {
-                                case "Expand Now":
-                                    $(this).text('Collapse');
-                                    $(this.parentElement).find('.pContent').css('overflow', 'visible');
-                                    $(this.parentElement).find('.pContent').css('max-height', '');
-                                    break;
-                                case "Read More":
-                                    console.log("more");
-                                    break;
-                                case "Collapse":
-                                    $(this).text('Expand Now');
-                                    $(this.parentElement).find('.pContent').css('overflow', 'hidden');
-                                    $(this.parentElement).find('.pContent').css('max-height', '300px');
-                                    break;
-                            }
+                                switch (target) {
+                                    case "Expand Now":
+                                        $(this).text('Collapse');
+                                        $(this.parentElement).find('.pContent').css('overflow', 'visible');
+                                        $(this.parentElement).find('.pContent').css('max-height', '');
+                                        break;
+                                    case "Read More":
+                                        console.log("more");
+                                        break;
+                                    case "Collapse":
+                                        $(this).text('Expand Now');
+                                        $(this.parentElement).find('.pContent').css('overflow', 'hidden');
+                                        $(this.parentElement).find('.pContent').css('max-height', '300px');
+                                        break;
+                                }
+                            });
+
                         });
-
                     });
-                    });
-                        }
+                }
 
 
 

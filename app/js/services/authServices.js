@@ -12,19 +12,31 @@ define(['services/services'],
                         };
                         deploydService.GetCurrentUser(attrs, function (res) {
                             if (res.id == undefined) { //if deployd not login
-                                callback(-1);
-                                //                                checkFacebookLogin(function (res) { //check facebook login
-                                //                                    callback(res);
-                                //                                });
+                                checkFacebookLogin(function (res) { //check facebook login
+                                    if (res != -1) {
+                                        var userid = res.authResponse.userID;
+                                        deploydService.CheckExistingUser(userid, function (res) {
+                                            callback(res[0]);
+                                        });
+                                    } else {
+                                        callback(-1);
+                                    }
+                                });
                             } else {
                                 callback(res);
                             }
                         });
                     } else { //no deployd session
-                        //                      checkFacebookLogin(function (res) { //check facebook login
-                        //                          callback(res);
-                        //                      });
-                        callback(-1);
+                        checkFacebookLogin(function (res) { //check facebook login
+                            if (res != -1) {
+                                var userid = res.authResponse.userID;
+                                deploydService.CheckExistingUser(userid, function (res) {
+                                    callback(res[0]);
+                                });
+                            } else {
+                                callback(-1);
+                            }
+                        });
                     }
                 }
 
@@ -70,8 +82,8 @@ define(['services/services'],
                         };
                         deploydService.UserLogout(attrs, function (res) {
                             if (res.count == 1) {
-                                callback(0);
                                 currUSER = undefined;
+                                callback(0);
                             } else {
                                 callback(-1);
                             }
@@ -84,7 +96,35 @@ define(['services/services'],
                     userDeploydLogout(angular.noop);
                     FB.login(function (response) {
                         if (response.status === 'connected') {
-                            callback(response);
+                            var token = response.authResponse.accessToken
+                            FB.api('/me', 'get', { access_token: token, fields: 'id,name,gender' }, function (response) {
+                                console.log(response.id);
+                                deploydService.CheckExistingUser(response.id, function (res) {
+                                    console.log(response);
+                                    if (res.length == 0) { //user no exist
+                                        var attrs = {};
+                                        attrs.username = response.id;
+                                        attrs.displayname = response.name;
+                                        attrs.email = undefined;
+                                        attrs.gender = response.gender;
+                                        attrs.password = "123456";
+                                        attrs.status = "active";
+                                        attrs.role = "FB";
+                                        attrs.faculty = undefined;
+
+                                        deploydService.CreateUser(attrs, function (res) {
+                                            if (res.id != undefined) {
+                                                alert('New is created, please modify your details.');
+                                                callback(res);
+                                            }
+                                        });
+                                    } else { //user exitst, no nid register
+                                        deploydService.CheckExistingUser(response.id, function (res) {
+                                            callback(res[0]);
+                                        });
+                                    }
+                                });
+                            });
                         } else {
                             callback(-1);
                         }
@@ -95,8 +135,8 @@ define(['services/services'],
                 function userFacebookLogout(callback) {
                     if (FB.getAccessToken() != null || FB.getAccessToken() != undefined) {
                         FB.logout(function (response) {
-                            callback(response);
                             currUSER = undefined;
+                            callback(response);
                         });
                     }
                 }
@@ -110,23 +150,18 @@ define(['services/services'],
                                     callback(res);
                                     currUSER = undefined;
                                 } else {
-                                    if (res.displayname != undefined) {
+                                    if (res.status == "active") { 
                                         callback(res);
                                         currUSER = res;
                                     } else {
-                                        if (res.status == "connected") {
-                                            callback(res);
-                                            currUSER = FB.getUserID();
-                                        } else {
-                                            callback(-1);
-                                            currUSER = undefined;
-                                        }
-
+                                        callback(-1);
+                                        currUSER = undefined;
+                                        alert('Your account unable to login, please contact admin.');
                                     }
                                 }
                             });
                         } else {
-                            callback(currUSER );
+                            callback(currUSER);
                         }
                     },
                     //Deployd login

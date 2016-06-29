@@ -12,21 +12,14 @@
 
                 authServices.GetCurrentUser(function (res) {
                     if (res != -1) {
-                        if (res.displayname != undefined) { //deployd login
+                        if (res.status == "active") {
                             $element.find('.logined').show();
                             $element.find('.logouted').hide();
                             $element.find('.logined').removeClass('ng-hide');
                             $scope.displayname = res.displayname;
                             $scope.knowUser = true;
                             $scope.unknowUser = false;
-                            $scope.loginType = "deployd";
-                        } else if (res.status == "connected") { //facebook login
-                            $element.find('.logined').show();
-                            $element.find('.logouted').hide();
-                            $element.find('.logined').removeClass('ng-hide');
-                            $scope.displayname = res.authResponse.userID;
-                            $scope.knowUser = true;
-                            $scope.loginType = "facebook";
+                            $scope.loginType = (res.role == "FB") ? "facebook" : "deployd";
                         }
                     } else {
                         $element.find('.logouted').show();
@@ -49,11 +42,11 @@
                 $scope.toSignUp = function () {
                     $element.parent().find('#my_signup_Modal').modal('show');
                 }
-                
-                $scope.userSetting = function (type){
-                    if(type == "password")
+
+                $scope.userSetting = function (type) {
+                    if (type == "password")
                         $element.parent().find('#my_settingPW_Modal').modal('show');
-                    else{
+                    else {
                         $element.parent().find('#my_setting_Modal').modal('show');
                         $rootScope.$broadcast('userSetting');
                     }
@@ -93,21 +86,24 @@
                     } else {
                         console.debug("logout error");
                     }
-
-
                 }
 
                 $scope.fbAuth = function () {
                     authServices.UserFacebookLogin(function (res) {
-                        if (res.status === 'connected') {
-                            console.debug("logged in");
+                        if (res.status =="active") {
                             $element.find('.logined').show();
                             $element.find('.logouted').hide();
                             $element.find('.logined').removeClass('ng-hide');
-                            $scope.displayname = FB.getUserID();
-                            $scope.knowUser = true;
-                            $scope.unknowUser = false;
-                            $scope.loginType = "facebook";
+//                          if (!$scope.$$phase) {
+//                              $scope.$apply(function () {
+                                $scope.displayname = res.displayname;
+                                $scope.knowUser = true;
+                                $scope.unknowUser = false;
+                                $scope.loginType = "facebook";
+//                              });
+//                          }
+                            $rootScope.$broadcast('refreshPost');    
+                            
                         } else {
                             console.debug("no login");
                             $element.find('.logouted').show();
@@ -118,10 +114,10 @@
                         }
                     });
                 }
-                
+
                 $element.find(".dropdown").removeClass('open');
-                $element.find(".dropdown").find("#dropdownMenu1").css('visibility',"visible");
-                $element.find(".dropdown").find(".dropdown-menu").css('visibility',"visible");
+                $element.find(".dropdown").find("#dropdownMenu1").css('visibility', "visible");
+                $element.find(".dropdown").find(".dropdown-menu").css('visibility', "visible");
 
                 $rootScope.$on("deploydLoginDetails", function (e) {
                     $scope.loginType = "deployd";

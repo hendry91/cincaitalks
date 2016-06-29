@@ -20,7 +20,7 @@ define(['directives/directives'],
                     } else {
                         $element.find('#comment').parent().find('.help-block').html('');
                         authServices.GetCurrentUser(function (res) {
-                            if (res.displayname != undefined) {
+                            if (res.status == "active") {
                                 var attrs = {};
                                 attrs.username = res.displayname;
                                 attrs.content = comment;

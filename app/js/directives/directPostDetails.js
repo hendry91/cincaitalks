@@ -107,21 +107,21 @@ define(['directives/directives', 'moment'],
                                 $scope.currDisplayname = res.displayname;
                             }
                        
-                        deploydService.GetPostbyPostid(content.id, content.postType, function (res) {
-                            $scope.postid = res.id;
-                            $scope.postTitle = res.title;
-                            $scope.postContent = res.content;
-                            $scope.postDate = $scope.formatFromTodayDate(res.date);
-                            $scope.postBy = res.displayname;
-                            $scope.liked = res.liked.length;
-                            $scope.disliked = res.disliked.length;
-                            $scope.shited = res.shited.length;
-                            $scope.loved = res.loved.length;
-                            $scope.postType = content.postType;
-                            $scope.commentedCount = res.commentedCount;
+                            deploydService.GetPostbyPostid(content.id, content.postType, function (res) {
+                                $scope.postid = res.id;
+                                $scope.postTitle = res.title;
+                                $scope.postContent = res.content;
+                                $scope.postDate = $scope.formatFromTodayDate(res.date);
+                                $scope.postBy = res.displayname;
+                                $scope.liked = res.liked.length;
+                                $scope.disliked = res.disliked.length;
+                                $scope.shited = res.shited.length;
+                                $scope.loved = res.loved.length;
+                                $scope.postType = content.postType;
+                                $scope.commentedCount = res.commentedCount;
                                 $scope.usenick = res.usenick;
-                            $('#overlay').hide();
-                            $element.find("#loading-indicator").hide();
+                                $('#overlay').hide();
+                                $element.find("#loading-indicator").hide();
                             
                             $scope.thisPost = angular.copy(res);
                             checkPostAction($scope.thisPost);

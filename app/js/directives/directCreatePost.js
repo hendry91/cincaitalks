@@ -27,7 +27,7 @@ define(['directives/directives'],
                                 $scope.disableNickname = true;
 
                             } else {
-                                if (res.displayname != undefined) { //deployd login
+                                if (res.status == "active") {
                                     $scope.userName = res.username;
                                     $scope.currUser = res.displayname;
 
@@ -35,20 +35,6 @@ define(['directives/directives'],
                                     $element.find('.categoriesFieldset > div > .help-block').html("");
                                     $element.find('input#chkNickname').removeClass('checked');
                                     $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
-
-                                    $scope.disableCategories = false;
-                                    $scope.isCheck = false;
-                                    $scope.disableNickname = false;
-                                    $scope.isDisable = true;
-
-                                } else if (res.status == "connected") { //facebook login
-                                    $scope.userName = res.authResponse.userID;
-                                    $scope.currUser = res.authResponse.userID;
-                                    $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
-
-                                    $element.find('.categoriesFieldset > div > .radio-inline').css('color', '');
-                                    $element.find('.categoriesFieldset > div > .help-block').html("");
-                                    $element.find('input#chkNickname').removeClass('checked');
 
                                     $scope.disableCategories = false;
                                     $scope.isCheck = false;
