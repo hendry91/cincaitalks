@@ -6,10 +6,13 @@ define(['directives/directives'],
                 $($element).ready(function () {
                     authServices.GetCurrentUser(function (res) {
                             if(res != undefined && res.username != undefined)
-                                $scope.currUser = res.username;
+                                $scope.currUser = angular.copy(res);
                     });
                     
                     $rootScope.$on("userSetting", function (e) {
+                        $('#overlay').show();
+                        $element.find("#loading-indicator").show();
+                        
                         $scope.thisUser = undefined;
                         deploydService.GetCurrentUser({ Cookie : $cookies.get('dCookie') },function (res) {
                             if(res != undefined && res.username){
@@ -18,30 +21,47 @@ define(['directives/directives'],
                                 $element.find("#my_setting_Modal").find("#radGender input[value="+$scope.thisUser.gender+"]").parent().addClass("active");
                                 $element.find("#my_setting_Modal").find("#radFaculty input[value="+$scope.thisUser.faculty+"]").parent().addClass("active");
                             }
+                            $('#overlay').hide();
+                            $element.find("#loading-indicator").hide();
                         });
                         
                     });
                     
                     $element.find('#my_settingPW_Modal .submit').on('click', function (event) {
+                        var changePwBtn = $(this);
+                        changePwBtn.addClass("disabled");
                         var oldPassword = $element.find("#inputOldPassword").val();
                         var newPassword = $element.find("#inputNewPassword").val();
                         var cfmNewPassword = $element.find("#inputPasswordConfirm").val();
                         
                         if(oldPassword == "" || newPassword == "" || cfmNewPassword == ""){
                             $element.find(".help-block").html('Password cannot be blank').css('color', 'red');
+                            changePwBtn.removeClass("disabled");
                         }
                         else if(newPassword.length < 6 || cfmNewPassword.length < 6){
                             $element.find(".help-block").html('Password must be at least 6 character').css('color', 'red');
+                            changePwBtn.removeClass("disabled");
                         }
                         else{
-                            deploydService.UserLogin({username: $scope.currUser,password: oldPassword},function(res){
+                            deploydService.UserLogin({username: $scope.currUser.username,password: oldPassword},function(res){
+                                changePwBtn.removeClass("disabled");
                                 if(res.id == undefined){
                                     $element.find(".help-block").html('Incorrect Old Password').css('color', 'red');
                                 }else{
                                     if(newPassword != cfmNewPassword)
                                     $element.find(".help-block").html('New Password unmatch Confirm Password').css('color', 'red');
                                     else{
-                                        console.debug("proceed");
+                                        $element.find(".help-block").html('');
+                                        var attr = {
+                                            id : $scope.currUser.id,
+                                            password : cfmNewPassword
+                                        }
+                                        
+                                        deploydService.UpdateUser(attr,function(res){
+                                            alert("Password Changed Sucessful");
+                                            changePwBtn.removeClass("disabled");
+                                            $element.find("#my_settingPW_Modal").find(".cancel").click();
+                                        });
                                     }
                                 }
                             })
@@ -182,7 +202,7 @@ define(['directives/directives'],
                         '<input type="email" class="form-control" ng-model="thisUser.email" id="inputEmail" placeholder="Email" data-error="Bruh, that email address is invalid" required>' +
                         '<div class="help-block with-errors"></div>' +
                         '</div>' +
-                        
+                        '<img src="img/loading.gif" id="loading-indicator" style="display:none" />' +
                         '<div class="form-group">' +
                         '<label for="gender" class="control-label">Gender : </label>' +
                         '<div class="btn-group" id="radGender" data-toggle="buttons">' +

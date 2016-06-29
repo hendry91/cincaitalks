@@ -3,6 +3,7 @@ define(['directives/directives', 'moment'],
         directives.directive('directPostDetails', ['$compile', 'deploydService', '$cookies', 'authServices', '$rootScope', function ($compile, deploydService, $cookies, authServices, $rootScope) {
 
             function init($scope, $element, $attrs) {
+
                 $element.find('.btnSubmit').on('click', function () {
                     var comment = $element.find('#comment').val();
                     if (comment == "") {
@@ -95,6 +96,11 @@ define(['directives/directives', 'moment'],
                 }
 
                 $($element).ready(function () {
+                    authServices.GetCurrentUser(function (res) {
+                        if(res.username != undefined && res.username != "")
+                            $scope.username = res.username;
+                    });
+                    
                     $rootScope.$on("openPost", function (e) {
                         content = $rootScope.contentDetails;
                         $element.modal('show');
@@ -114,6 +120,9 @@ define(['directives/directives', 'moment'],
                             $scope.commentedCount = res.commentedCount;
                             $('#overlay').hide();
                             $element.find("#loading-indicator").hide();
+                            
+                            $scope.thisPost = angular.copy(res);
+                            checkPostAction($scope.thisPost);
                         });
                     });
 
@@ -200,6 +209,29 @@ define(['directives/directives', 'moment'],
                             $('#overlay').hide();
                         });
                     });
+                    
+                    var processBlock = false;
+                    $scope.actionClicked = function(actionType,isActionType,e){
+                        if(!processBlock){
+                            processBlock = true;
+                            if($scope.thisPost[isActionType]){
+                                $scope.thisPost[actionType].splice($scope.thisPost[actionType].indexOf($scope.username));
+                            }
+                            else{
+                                $scope.thisPost[actionType].push($scope.username);
+                            }
+                            
+                            var attr = {};
+                            attr.id = $scope.thisPost.id;
+                            attr[actionType] = $scope.thisPost[actionType];
+                            
+                            deploydService.UpdatePostAction(attr,actionType,$scope.postType,function(res){
+                                $scope[actionType] = res[actionType].length;
+                                $scope.thisPost[isActionType] = !($scope.thisPost[isActionType]);
+                                processBlock = false;
+                            })
+                        }
+                    }
                 });
 
                 var endOfToday = moment().endOf('day');
@@ -210,6 +242,20 @@ define(['directives/directives', 'moment'],
                     else
                         return moment(date).format('DD-MM-YYYY, h:mm a');
                 };
+                
+                function checkPostAction(data){
+                    var actionString = ["liked","disliked","shited","loved"];
+                    var isActionString = ["isLiked","isDisliked","isShited","isLoved"];
+                    
+                    for(var i=0;i<actionString.length;i++){
+                        $scope.thisPost[isActionString[i]] = false;
+                        data[actionString[i]].forEach(function(res){
+                            if(res == $scope.username)
+                                $scope.thisPost[isActionString[i]] = true;
+                        })
+                    }
+                    
+                }
             }
 
             return {
@@ -229,11 +275,11 @@ define(['directives/directives', 'moment'],
                                 '<p style="max-height: 250px;min-height: 100px;background: aquamarine;padding-left: 10px;padding-top: 10px;overflow: auto;">{{postContent}}</p>' +
                             '</div>' +
                             '<div class="form-group">' +
-                                '<span><a class="btnLike" style="font-size: 20px;cursor: pointer;">&#128077; {{liked}} Like </a> </span>' +
-                                '<span><a class="btnDislike" style="font-size: 20px;cursor: pointer;">&#128078; {{disliked}} Dislike </a> </span> ' +
-                                '<span><a class="btnShit" style="font-size: 20px;cursor: pointer;color: brown;">&#128169; {{shited}} Shit </a></span>' +
-                                '<span><a class="btnLove" style="font-size: 20px;cursor: pointer;color:red">&#x2764; {{loved}} Love </a> </span> ' +
-                                '<span><a class="btnComment" style="font-size: 20px;cursor: pointer;color:#4acdea;" data-toggle="collapse" href="#collapseComment">&#128172; {{commentedCount}} Comment </a> </span> ' +
+                                '<span><a class="btnLike actionBtn" ng-click="actionClicked(\'liked\',\'isLiked\',$event)" >&#128077; {{liked}} <span ng-if="!thisPost.isLiked">Like</span> <span ng-if="thisPost.isLiked">Liked</span> </a> </span>' +
+                                '<span><a class="btnDislike actionBtn" ng-click="actionClicked(\'disliked\',\'isDisliked\',$event)">&#128078; {{disliked}} <span ng-if="!thisPost.isDisliked">Dislike</span> <span ng-if="thisPost.isDisliked">Disliked</span></a> </span>'+
+                                '<span><a class="btnShit actionBtn" style="color: brown;" ng-click="actionClicked(\'shited\',\'isShited\',$event)">&#128169; {{shited}} <span ng-if="!thisPost.isShited">Shit</span> <span ng-if="thisPost.isShited">Shited</span></a></span>' +
+                                '<span><a class="btnLove actionBtn" style="color:red;" ng-click="actionClicked(\'loved\',\'isLoved\',$event)">&#x2764; {{loved}} <span ng-if="!thisPost.isLoved">Love</span> <span ng-if="thisPost.isLoved">Loved</span></a> </span> ' +
+                                '<span><a class="btnComment actionBtn" style="color:#4acdea;" data-toggle="collapse" href="#collapseComment" >&#128172; {{commentedCount}} Comment </a> </span> ' +
                             '</div>' +
                             '<div class="collapse" id="collapseComment">' +
                                 '<div class="container">' +

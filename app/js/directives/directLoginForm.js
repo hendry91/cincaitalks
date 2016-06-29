@@ -111,7 +111,7 @@ define(['directives/directives'],
                             '</form>' +
                             '<div class="modal-footer">' +
                             '<label for="invalid" class="invalidInput" style="color:red; display:none;float: left;">Invalid username or password.</label>' +
-                            '<button type="button" class="btn btn-default btnReset" value="Recover" data-toggle="collapse" href="#collapseRecover">Recover Password</button>' +
+                            '<small class="text-muted btnRecoverPw" value="Recover" data-toggle="collapse" href="#collapseRecover">Recover Password</small>' +
                             '<button type="submit" class="btn btn-default btnLogin" data-dismiss="modal" value="Login">Login</button>' +
                             '<button type="button" class="btn btn-default btnCancel" data-dismiss="modal">Close</button>' +
                             '</div>' +

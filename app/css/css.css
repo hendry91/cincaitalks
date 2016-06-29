@@ -134,3 +134,19 @@
     opacity: 0.3;
     z-index: 99999; /* should be large enough to be on top of everything */
 }
+
+.btnRecoverPw{
+    color: blue;
+    vertical-align: bottom;
+    margin-right: 5px;
+}
+.btnRecoverPw:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#my_postDetails_Modal .actionBtn{
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 5px;
+}

@@ -114,6 +114,8 @@
                 }
                 
                 $element.find(".dropdown").removeClass('open');
+                $element.find(".dropdown").find("#dropdownMenu1").css('visibility',"visible");
+                $element.find(".dropdown").find(".dropdown-menu").css('visibility',"visible");
 
                 $rootScope.$on("deploydLoginDetails", function (e) {
                     $scope.loginType = "deployd";

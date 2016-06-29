@@ -46,7 +46,7 @@ define(['services/services'],
                     createPosting: { method: 'POST', params: { path:"", object: ""} },
                     createFeedb: { method: 'POST', params: { path:"", object: ""} },
                     createComment: { method: 'POST', params: { path:"", object: ""} },
-update: {method : 'PUT' , params:{ path:"",object: ""} }
+                    update: {method : 'PUT' , params:{ path:"",object: ""} }
                 });
 
                 var comment = $resource(prefixurl + "/comment?:object", null, {
@@ -163,21 +163,12 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
 						function (error) { responseError(error, callback) });
                 }
 				
-                function updatePost(attrs, type, callback) {
+                function updatePostAction(attrs,actionType, type, callback) {
+                    var request = {};
                     
-                    var request = {
-						username : attrs.username,
-                        displayname : attrs.displayname,
-                        title: attrs.title,
-						content : attrs.content,
-						image : attrs.image,
-                        liked: attrs.liked,
-                        commented: attrs.commented,
-                        shited: attrs.shited,
-                        loved: attrs.loved,
-                        disliked: attrs.disliked,
-						date : attrs.date
-					};
+                    request[actionType] = attrs[actionType];
+					
+                    var type= path[type];
 					
 					var update = create.update({path : type,object:attrs.id}, JSON.stringify(request),
 						function (success) { responseSuccess(success, null, callback) },
@@ -232,12 +223,7 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
                 };
                 
                 function updateUser(attrs,callback){
-                    var request = {
-                        displayname : attrs.displayname,
-                        email : attrs.email,
-                        gender : attrs.gender,
-                        faculty : attrs.faculty,
-                    }
+                    var request = attrs;
                     
                     var user = deploydUser.update({ object:attrs.id },JSON.stringify(request),
                         function (success) { responseSuccess(success, null, callback) },
@@ -358,7 +344,8 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
 
 
                     CreatePost: createPost,
-                    UpdatePost: updatePost,
+                    
+                    UpdatePostAction : updatePostAction,
                     CreateComment:createComment, 
                     GetCommentbyPostid: getCommentbyPostid,
                     GetPostbyPostid:getPostbyPostid,
