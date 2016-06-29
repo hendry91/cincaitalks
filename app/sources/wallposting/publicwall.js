@@ -27,10 +27,52 @@
                     refreshPost();
                 });
                 $(element).ready(function () {
+
+                    deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
+                        $('#pagination').twbsPagination({
+                            totalPages: Math.ceil(res.length / 12), //round up decimal +1
+                            visiblePages: 10,
+                            onPageClick: function (event, page) {
+                                toGetPost(page);
+                                //$('#page-content').text('Page ' + page);
+                            }
+                            //href: '?page={{number}}'
+                        });
+                    });
+
+
+                    $('#confirm-delete').on('show.bs.modal', function (e) {
+                        var content = scope.currentPostTarget;
+                        scope.$apply(function () {
+                            scope.postTitle = content.title;
+                        });
+                        console.log(scope.postdb);
+                    });
+
+                    element.find('.btnDeletePost').on('click', function (event) {
+                        if (scope.currUser == scope.currentPostTarget.username) {
+                            var attrs = { id: scope.currentPostTarget.id, status: "D" }
+                            deploydService.DeletePost(attrs, scope.pageCategories, function (res) {
+                                if (res.status = "D") {
+                                    alert("your post has been deleted.");
+                                    refreshPost();
+                                }
+                                element.find('#confirm-delete').modal('hide');
+                            });
+                        } else {
+                            alert("You can't remove people post, if this post belong to you, there must be some error, please contact admin to solve this problem. Thanks.");
+                        }
+
+                    });
+                });
+
+
+                function toGetPost(pageNum) {
+                    var skipnum = (pageNum - 1) * 12;
                     //for limit the return number
                     var attrs = {
                         limit: 12, //eg:6 will get 6 post
-                        skip: 0, //skip how many, eg: 1 page 10 post, when click second page, should skip 10 post.
+                        skip: skipnum, //skip how many, eg: 1 page 10 post, when click second page, should skip 10 post.
                         sortCategories: "date",
                         sortType: -1  //1 for ascending sort (lowest first; A-Z, 0-10) or -1 for descending (highest first; Z-A, 10-0)
                     }
@@ -100,43 +142,10 @@
 
                     });
                     });
-
-                    //                    $('#pagination').twbsPagination({
-                    //                        totalPages: 35,
-                    //                        visiblePages: 10,
-                    //                        onPageClick: function (event, page) {
-                    //                            //$('#page-content').text('Page ' + page);
-                    //                        }
-                    //                        //href: '?page={{number}}'
-                    //                    });
-
-
-                    $('#confirm-delete').on('show.bs.modal', function (e) {
-                        var content = scope.currentPostTarget;
-                        scope.$apply(function () {
-                            scope.postTitle = content.title;
-                        });
-                        console.log(scope.postdb);
-                    });
-
-                    element.find('.btnDeletePost').on('click', function (event) {
-                        if (scope.currUser == scope.currentPostTarget.username) {
-                            var attrs = { id: scope.currentPostTarget.id, status: "D" }
-                            deploydService.DeletePost(attrs, scope.pageCategories, function (res) {
-                                if (res.status = "D") {
-                                    alert("your post has been deleted.");
-                                    refreshPost();
-                                }
-                                element.find('#confirm-delete').modal('hide');
-                            });
-                        } else {
-                            alert("You can't remove people post, if this post belong to you, there must be some error, please contact admin to solve this problem. Thanks.");
                         }
 
-                    });
 
 
-                });
 
                 var endOfToday = moment().endOf('day');
                 var startOfToday = moment().startOf('day');
@@ -212,7 +221,7 @@
                                     '<div class="card-block ellipsis ">' +
                                         '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong> {{post.title}} </strong></h5>' +
                                         '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;"> {{post.content}} </p>' +
-                                        '<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by {{post.displayname}}'+
+                                        '<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by {{post.displayname}}' +
                                         '<i class="fa fa-star-o" aria-hidden="true" style="color:red" ng-if="post.usenick == true" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i></small></p>' +
                                     '</div>' +
                                 '</div>' +
@@ -220,9 +229,9 @@
                             '</div>' +
                             '</div>' +
 
-                //                            '<nav>'+
-                //                            '<ul id="pagination" class="pagination-sm"></ul>' +
-                //                            '</nav>'+
+                            '<nav>' +
+                            '<ul id="pagination" class="pagination-sm"></ul>' +
+                            '</nav>' +
 '<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
 '<div class="modal-dialog">' +
 '<div class="modal-content">' +
