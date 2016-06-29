@@ -33,6 +33,8 @@
                             totalPages: Math.ceil(res.length / 12), //round up decimal +1
                             visiblePages: 10,
                             onPageClick: function (event, page) {
+                                $('#loading').show();
+                                $('#overlay').show();
                                 toGetPost(page);
                                 //$('#page-content').text('Page ' + page);
                             }
