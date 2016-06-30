@@ -28,7 +28,7 @@
                 $(element).ready(function () {
 
                     deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
-                        if (res.length > 1) {
+                        if (res.length > 0) {
                             $('#pagination').twbsPagination({
                                 totalPages: Math.ceil(res.length / itemPerPage), //round up decimal +1
                                 visiblePages: 10,
@@ -140,7 +140,7 @@
                     if (scope.currUser == scope.currentPostTarget.username || scope.role == "admin") {
                         var attrs = { id: scope.currentPostTarget.id, status: "D", updatedby: scope.currUser, lastdate: new Date() }
                         deploydService.DeletePost(attrs, scope.pageCategories, function (res) {
-                            if (res.status = "D") {
+                            if (res.status == "D") {
                                 alert("your post has been deleted.");
                                 refreshPost();
                             }
