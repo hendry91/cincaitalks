@@ -4,7 +4,7 @@ define(['services/services'],
             function ($resource) {
 
                 //var prefixurl = "http://localhost:2403";
-                var prefixurl = "http://ec2-52-91-4-159.compute-1.amazonaws.com:9090";
+                var prefixurl = "http://ec2-54-209-239-57.compute-1.amazonaws.com:9090";
 
                 var path = {
                     other: "other",
@@ -17,7 +17,8 @@ define(['services/services'],
                     love: "love",
                     feedback: "feedback",
                     publicfeedback: "publicfeedback",
-                    comment: "comment"
+                    comment: "comment",
+                    backuppost : "backuppost"
                 };
 
                 //=============================== AJAX CALLS DEFINITION =====================================================
@@ -49,7 +50,8 @@ define(['services/services'],
                     createPosting: { method: 'POST', params: { path:"", object: ""} },
                     createFeedb: { method: 'POST', params: { path:"", object: ""} },
                     createComment: { method: 'POST', params: { path:"", object: ""} },
-                    update: {method : 'PUT' , params:{ path:"",object: ""} }
+                    update: {method : 'PUT' , params:{ path:"",object: ""} },
+                    addBackup: { method: 'POST', params: { path:"", object: ""} }
                 });
 
                 var comment = $resource(prefixurl + "/comment?:object", null, {
@@ -159,15 +161,6 @@ define(['services/services'],
 						function (error) { responseError(error, callback) });
                 };
                 
-				function deletePost(attrs, type, callback){
-                    
-                    var request = attrs;
-					
-					var update = postRequest.update({path : type}, JSON.stringify(request),
-						function (success) { responseSuccess(success, null, callback) },
-						function (error) { responseError(error, callback) });
-                }
-				
                 function updatePostAction(attrs,actionType, type, callback) {
                     var request = {};
                     
@@ -295,11 +288,35 @@ define(['services/services'],
                 }
 
                 function updatePost(attrs, type, callback){
+                    var request = { id: attrs.postid, content: attrs.content, updatedby: attrs.updatedby,lastdate : attrs.lastdate };
+                    //var toPost = {postid: attrs.postid, username: attrs.updatedby, content: attrs.oldContent,date:new Date()}
+                    //{path : type ,object:JSON.stringify({ include:"testadsadsadasd" })}
+					var update = postRequest.update({path : type}, JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
+
+                function deletePost(attrs, type, callback){
                     var request = attrs;
 					var update = postRequest.update({path : type}, JSON.stringify(request),
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 }
+
+                function addbackup(attrs, type, callback) {
+                    var request = {
+                        postid : attrs.postid,
+						username : attrs.username,
+						content : attrs.content,
+						date : new Date(),
+//                      title: attrs.title,
+//						image : attrs.image,
+					};
+                    var type = path[type];
+					var createP = create.createPosting({path : type}, JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                };
 
                 //EXAMPLE : SRART
 //              function getxxxList(callback){
@@ -362,7 +379,7 @@ define(['services/services'],
 
 
                     CreatePost: createPost,
-                    
+                    Addbackup : addbackup, 
                     UpdatePostAction : updatePostAction,
                     CreateComment:createComment, 
                     GetCommentbyPostid: getCommentbyPostid,

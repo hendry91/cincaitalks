@@ -42,12 +42,30 @@ define(['directives/directives'],
                         $element.find('.txtComment').parent().find('.help-block').html('');
                     }
 
-                    var attrs = { id : $scope.postid, content: inputComment, }
+                    authServices.GetCurrentUser(function (res) {
+                        if (res == -1) {
+                            alert("Login error, if saw this message, please report to admin.");
+                        } else {
+                            var currUser = res.username;
+                            var attrsbackup = { postid: $scope.postid, username: currUser, content: $scope.backupContent };
+                            var attrs = { postid: $scope.postid, content: inputComment, updatedby: currUser, lastdate: new Date() };
+
+                            deploydService.Addbackup(attrsbackup, "backuppost", function (res) {
+                                if (res.id != undefined) {
                         deploydService.UpdatePost(attrs, $scope.postType, function (res) {
-                            if(res.id != undefined){
+                                        if (res.id != undefined) {
                                 alert("Post updated.");
                                 $rootScope.$broadcast('refreshPost');
                                 $element.modal('hide');
+                                        } else {
+                                            alert("Something wrong, please report to admin with code x00979.");
+                                        }
+                                    });
+                                } else {
+                                    alert("Something wrong, please report to admin with code x00978.");
+                                }
+
+                            });
                             }
                         });
                 }

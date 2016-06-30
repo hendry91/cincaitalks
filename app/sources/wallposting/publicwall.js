@@ -28,17 +28,22 @@
                 $(element).ready(function () {
 
                     deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
-                        $('#pagination').twbsPagination({
-                            totalPages: Math.ceil(res.length / itemPerPage), //round up decimal +1
-                            visiblePages: 10,
-                            onPageClick: function (event, page) {
-                                $('#loading').show();
-                                $('#overlay').show();
-                                toGetPost(page);
-                                //$('#page-content').text('Page ' + page);
-                            }
-                            //href: '?page={{number}}'
-                        });
+                        if (res.length > 1) {
+                            $('#pagination').twbsPagination({
+                                totalPages: Math.ceil(res.length / itemPerPage), //round up decimal +1
+                                visiblePages: 10,
+                                onPageClick: function (event, page) {
+                                    $('#loading').show();
+                                    $('#overlay').show();
+                                    toGetPost(page);
+                                    //$('#page-content').text('Page ' + page);
+                                }
+                                //href: '?page={{number}}'
+                            });
+                        } else {
+                            $('#loading').hide();
+                            $('#overlay').hide();
+                        }
                     });
                 });
 
@@ -133,7 +138,7 @@
 
                 element.find('.btnDeletePost').on('click', function (event) {
                     if (scope.currUser == scope.currentPostTarget.username || scope.role == "admin") {
-                        var attrs = { id: scope.currentPostTarget.id, status: "D" }
+                        var attrs = { id: scope.currentPostTarget.id, status: "D", updatedby: scope.currUser, lastdate : new Date() }
                         deploydService.DeletePost(attrs, scope.pageCategories, function (res) {
                             if (res.status = "D") {
                                 alert("your post has been deleted.");
