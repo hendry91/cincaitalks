@@ -12,11 +12,11 @@ define(['directives/directives'],
                         
                         $scope.thisUser = undefined;
                         deploydService.GetCurrentUser({ Cookie : $cookies.get('dCookie') },function (res) {
-                            if(res != undefined && res.username){
+                            if(res != undefined && res.status=="active"){
                                 $scope.thisUser = angular.copy(res);
                                 //Init css to selected Button
-                                $element.find("#my_setting_Modal").find("#radGender input[value="+$scope.thisUser.gender+"]").parent().addClass("active");
-                                $element.find("#my_setting_Modal").find("#radFaculty input[value="+$scope.thisUser.faculty+"]").parent().addClass("active");
+                                $element.find("#my_setting_Modal").find("#radGender input[value='"+$scope.thisUser.gender+"']").parent().addClass("active");
+                                $element.find("#my_setting_Modal").find("#radFaculty input[value='"+$scope.thisUser.faculty+"']").parent().addClass("active");
                             }
                             $('#overlay').hide();
                             $element.find("#loading-indicator").hide();
@@ -42,7 +42,7 @@ define(['directives/directives'],
                         else{
                              authServices.GetCurrentUser(function (res) {
                                 var currUser = "";
-                                if(res != undefined && res.username != undefined){
+                                if(res != undefined && res.status == "active"){
                                     currUser = angular.copy(res);
                                     
                                     deploydService.UserLogin({username: currUser.username,password: oldPassword},function(res){
@@ -191,20 +191,20 @@ define(['directives/directives'],
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
                         '<h4 class="modal-title">User Setting</h4>' +
                         '</div>' +
-                        '<form role="form">' +
-                        '<div class="form-group">' +
+                        '<form role="form" style="padding: 10px 10px 0px 10px;">' +
+                        '<div class="form-group" >' +
                         '<label for="inputName" class="control-label">User Name : {{ thisUser.username }}</label>' +
                         '</div>' +
 
                         '<div class="form-group">' +
                         '<label for="inputName" class="control-label">Display Name</label>' +
-                        '<input type="text" class="form-control" ng-model="thisUser.displayname" ng-bind="thisUser.displayname" id="inputDisplayName" data-minlength="5" maxlength="15" placeholder="Display Name (Min 5, Max 15 words)." required>' +
+                        '<input type="text" class="form-control" ng-model="thisUser.displayname" ng-bind="thisUser.displayname" id="inputDisplayName" data-minlength="5" maxlength="15" placeholder="Display Name (Min 5, Max 15 words).">' +
                         '<div class="help-block with-errors"></div>' +
                         '</div>' +
 
                         '<div class="form-group">' +
                         '<label for="inputEmail" class="control-label">Email</label>' +
-                        '<input type="email" class="form-control" ng-model="thisUser.email" id="inputEmail" placeholder="Email" data-error="Bruh, that email address is invalid" required>' +
+                        '<input type="email" class="form-control" ng-model="thisUser.email" id="inputEmail" placeholder="Email" >' +
                         '<div class="help-block with-errors"></div>' +
                         '</div>' +
                         '<img src="img/loading.gif" id="loading-indicator" style="display:none" />' +
