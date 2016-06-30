@@ -98,9 +98,7 @@ define(['services/services'],
                         if (response.status === 'connected') {
                             var token = response.authResponse.accessToken
                             FB.api('/me', 'get', { access_token: token, fields: 'id,name,gender' }, function (response) {
-                                console.log(response.id);
                                 deploydService.CheckExistingUser(response.id, function (res) {
-                                    console.log(response);
                                     if (res.length == 0) { //user no exist
                                         var attrs = {};
                                         attrs.username = response.id;

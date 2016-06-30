@@ -74,7 +74,6 @@
                             processResize(scope, element);
 
                             $(element).find('.btnReadMore,.btnExpand').on('click', function (e) {
-                                console.log(e);
                                 var target = e.currentTarget.text;
 
                                 switch (target) {
@@ -84,7 +83,6 @@
                                         $(this.parentElement).find('.pContent').css('max-height', '');
                                         break;
                                     case "Read More":
-                                        console.log("more");
                                         break;
                                     case "Collapse":
                                         $(this).text('Expand Now');

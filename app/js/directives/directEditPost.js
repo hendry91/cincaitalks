@@ -24,7 +24,6 @@ define(['directives/directives'],
                 });
 
                 $scope.btnSubmitEdit = function (res) {
-                    console.log($scope.backupContent);
                     var inputComment = $element.find('.txtComment').val().trim();
 
                     if($scope.backupContent === inputComment){
