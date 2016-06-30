@@ -16,7 +16,7 @@ define(['directives/directives'],
                                 $scope.currUser = "anonymous";
                                 $element.find('input#chkNickname').addClass('checked');
 
-                                $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
+                                $element.find('.categoriesFieldset > .form-group  input:radio')[8].checked = true;
 
                                 $element.find('.categoriesFieldset > div > .radio-inline').css('color', 'gainsboro');
                                 $element.find('.categoriesFieldset > div > .help-block').html("you have no login, only able post to Public's wall.").css('color', 'red');
@@ -34,7 +34,7 @@ define(['directives/directives'],
                                     $element.find('.categoriesFieldset > div > .radio-inline').css('color', '');
                                     $element.find('.categoriesFieldset > div > .help-block').html("");
                                     $element.find('input#chkNickname').removeClass('checked');
-                                    $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
+                                    $element.find('.categoriesFieldset > .form-group  input:radio')[8].checked = true;
 
                                     $scope.disableCategories = false;
                                     $scope.isCheck = false;
@@ -173,7 +173,7 @@ define(['directives/directives'],
                     if ($scope.currUser != "anonymous") {
                         $element.find('.inputNickname').val('');
                         $element.find('.txtTitle').val('');
-                        $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
+                        $element.find('.categoriesFieldset > .form-group  input:radio')[8].checked = true;
                         $element.find('input#chkNickname').prop('checked', false);
                         $element.find('.txtComment').val('');
                         $scope.isCheck = false;
@@ -182,7 +182,7 @@ define(['directives/directives'],
                     } else {
                         $element.find('.inputNickname').val('');
                         $element.find('.txtTitle').val('');
-                        $element.find('.categoriesFieldset > .form-group  input:radio')[7].checked = true;
+                        $element.find('.categoriesFieldset > .form-group  input:radio')[8].checked = true;
                         $element.find('.txtComment').val('');
                         $scope.disableNickname = true;
                         $element.find('input#chkNickname').prop('checked', true);
