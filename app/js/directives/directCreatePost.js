@@ -141,6 +141,9 @@ define(['directives/directives'],
                             case "S&R":
                                 proceedCreateAPI(attrs, "salesnrent");
                                 break;
+                            case "L&F":
+                                proceedCreateAPI(attrs, "lnf");
+                                break;
                             default:
                                 proceedCreateAPI(attrs, "public");
                                 break;
@@ -238,6 +241,9 @@ define(['directives/directives'],
 '</label>' +
 '<label class="radio-inline">' +
 '<input type="radio" name="optradio" value="S&R"> Sales & Rent' +
+'</label>' +
+'<label class="radio-inline">' +
+'<input type="radio" name="optradio" value="L&F"> Lost & Found' +
 '</label>' +
 '<label class="radio-inline">' +
 '<input type="radio" name="optradio" value="Other"> Other' +

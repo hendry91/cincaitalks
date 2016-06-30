@@ -18,7 +18,8 @@ define(['services/services'],
                     feedback: "feedback",
                     publicfeedback: "publicfeedback",
                     comment: "comment",
-                    backuppost : "backuppost"
+                    backuppost : "backuppost",
+                    lnf : "lnf"
                 };
 
                 //=============================== AJAX CALLS DEFINITION =====================================================
