@@ -49,7 +49,7 @@ define(['services/services'],
                     createPosting: { method: 'POST', params: { path:"", object: ""} },
                     createFeedb: { method: 'POST', params: { path:"", object: ""} },
                     createComment: { method: 'POST', params: { path:"", object: ""} },
-update: {method : 'PUT' , params:{ path:"",object: ""} }
+                    update: {method : 'PUT' , params:{ path:"",object: ""} }
                 });
 
                 var comment = $resource(prefixurl + "/comment?:object", null, {
@@ -105,7 +105,8 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
                     var request = {
                         $limit: attrs.limit, 
                         $skip: attrs.skip,
-                        $sort: objectSort
+                        $sort: objectSort,
+                        status: {$ne : "D"} //set to get status != D post.
                     };
 
                     var userList = postRequest.getLimit({path : type, object : JSON.stringify(request)},
@@ -293,6 +294,12 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
 						function (error) { responseError(error, callback) });
                 }
 
+                function updatePost(attrs, type, callback){
+                    var request = attrs;
+					var update = postRequest.update({path : type}, JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
 
                 //EXAMPLE : SRART
 //              function getxxxList(callback){
@@ -362,7 +369,7 @@ update: {method : 'PUT' , params:{ path:"",object: ""} }
                     GetPostbyPostid:getPostbyPostid,
 
                     DeletePost: deletePost,
-
+                    UpdatePost:updatePost,
                     CreateUser: createUser,
                     UpdateUser: updateUser,
                     UserLogin: userLogin,

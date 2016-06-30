@@ -87,11 +87,12 @@ define(['directives/directives'],
                             $element.find('.txtTitle').parent().find('.help-block').html('');
                         }
 
-                        var inputComment = $element.find('.txtComment').val();
+                        var inputComment = $element.find('.txtComment').val().trim();
                         if (inputComment == "") {
+                            $element.find('.txtComment').parent().find('.help-block').html('Please enter your comment').css('color', 'red');
                             return;
-                        } else if (inputComment.length < 5 || inputComment.length > 1000) {
-                            $element.find('.txtComment').parent().find('.help-block').html('Length must between 5 - 1000.').css('color', 'red');
+                        } else if (inputComment.length < 5 || inputComment.length > 5000) {
+                            $element.find('.txtComment').parent().find('.help-block').html('Length must between 5 - 5000.').css('color', 'red');
                             return;
                         } else {
                             $element.find('.txtComment').parent().find('.help-block').html('');
@@ -189,8 +190,6 @@ define(['directives/directives'],
 
             }
 
-
-            // removed from first div = 'ng-click="showAllIndice()"'
             return {
                 restrict: 'E',
                 template: '<div class="modal fade" id="my_create_post_Modal" role="dialog">' +
@@ -251,11 +250,11 @@ define(['directives/directives'],
 '</fieldset>' +
 '<div class="form-group">' +
 '<label for="comment">Comment:</label>' +
-'<textarea class="form-control txtComment" rows="5" id="comment" data-minlength="15" maxlength="1000" required></textarea>' +
+'<textarea class="form-control txtComment" rows="5" id="comment" data-minlength="15" maxlength="5000" required></textarea>' +
 '<div class="help-block with-errors"></div>' +
 '</div>' +
 
-'<div class="modal-footer  form-grou">' +
+'<div class="modal-footer form-group">' +
 '<button type="submit" class="btn btn-default submitPost">Submit</button>' +
 '<button type="button" class="btn btn-default cancelPost">Close</button>' +
 '</form>' +

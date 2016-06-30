@@ -276,7 +276,7 @@ define(['directives/directives', 'moment'],
                             '<img src="img/loading.gif" id="loading-indicator" style="display:none" />' +
                             '<form role="form">' +
                             '<div class="form-group">' +
-                                '<p style="max-height: 250px;min-height: 100px;background: aquamarine;padding-left: 10px;padding-top: 10px;overflow: auto;">{{postContent}}</p>' +
+                                '<p style="max-height: 250px;min-height: 100px;background: aquamarine;padding-left: 10px;padding-top: 10px;overflow: auto;" ng-bind-html = "postContent | newLine" ng-model="postContent">{{postContent}}</p>' +
                             '</div>' +
                             '<div class="form-group">' +
                                 '<span><a class="btnLike actionBtn" ng-click="actionClicked(\'liked\',\'isLiked\',$event)" >&#128077; {{liked}} <span ng-if="!thisPost.isLiked">Like</span> <span ng-if="thisPost.isLiked">Liked</span> </a> </span>' +

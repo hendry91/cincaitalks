@@ -3,12 +3,13 @@ define(['angular',
         'angularroute',
         'angularuiroute',
         'services/services',
+        'filters/filters', 
         'controllers/controllers',
         'directives/directives',
         'angularloadingbar'],
         function (angular) {
             var app = angular.module('cincaiTalk',
-				 ['ngRoute', 'services', 'controllers', 'directives', 'ui.router', 'angular-loading-bar']);
+				 ['ngRoute', 'services', 'filters', 'controllers', 'directives', 'ui.router', 'angular-loading-bar']);
             app.config(['$routeProvider', '$stateProvider', '$urlRouterProvider', '$httpProvider',
             function ($routeProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
 
@@ -59,7 +60,7 @@ define(['angular',
             }
 
             ])
-             .constant('itemPerPage', '12');
+             .constant('itemPerPage', '9');
             app.config(function ($httpProvider) { //if not this code, deployd get current user have problem
                 $httpProvider.defaults.withCredentials = true;
                 $httpProvider.defaults.useXDomain = true;

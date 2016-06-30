@@ -150,3 +150,7 @@
     cursor: pointer;
     margin-right: 5px;
 }
+.overflowauto
+{
+    overflow:auto !important;
+}
