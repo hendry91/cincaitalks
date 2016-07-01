@@ -14,6 +14,7 @@ define(['directives/directives'],
                             if (res == -1) {
                                 $scope.userName = "anonymous";
                                 $scope.currUser = "anonymous";
+                                $scope.isfb = false;
                                 $element.find('input#chkNickname').addClass('checked');
 
                                 $element.find('.categoriesFieldset > .form-group  input:radio')[8].checked = true;
@@ -30,7 +31,7 @@ define(['directives/directives'],
                                 if (res.status == "active") {
                                     $scope.userName = res.username;
                                     $scope.currUser = res.displayname;
-
+                                    $scope.isfb = (res.role == "FB") ? true : false;
                                     $element.find('.categoriesFieldset > div > .radio-inline').css('color', '');
                                     $element.find('.categoriesFieldset > div > .help-block').html("");
                                     $element.find('input#chkNickname').removeClass('checked');
@@ -116,7 +117,8 @@ define(['directives/directives'],
                             loved: [],
                             disliked: [],
                             date: new Date(),
-                            usenick: (inputNick != undefined) ? true : false
+                            usenick: (inputNick != undefined) ? true : false,
+                            isfb: $scope.isfb
                         };
 
                         switch (checkedCategories) {

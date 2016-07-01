@@ -152,7 +152,8 @@ define(['services/services'],
                         commentedCount: 0,
 						date : attrs.date,
                         status : "A",
-                        usenick: attrs.usenick
+                        usenick: attrs.usenick,
+                        isfb : attrs.isfb
 					};
 
                     var type = path[type];
@@ -183,7 +184,9 @@ define(['services/services'],
 						date : attrs.date,
                         content: attrs.content,
                         categories:attrs.categories,
-                        usenick:attrs.usenick
+                        usenick:attrs.usenick,
+                        status: "A",
+                        isfb: attrs.isfb
 					};
                     var type = path[type];
 					

@@ -8,6 +8,7 @@ define(['directives/directives'],
                 $rootScope.$broadcast('setBreakLineTitle');
             }
             function init($scope, $element, $attrs) {
+                $($element).ready(function () {
                 $element.find('.btnSubmit').on('click', function (event) {
                     var comment = $element.find('#comment').val();
 
@@ -51,7 +52,9 @@ define(['directives/directives'],
                     }
 
                 });
-
+                    $('#loading').hide();
+                    $('#overlay').hide();
+                });
             }
 
             return {

@@ -36,6 +36,7 @@ define(['directives/directives', 'moment'],
                                 attrs.content = comment;
                                 attrs.categories = $scope.postType;
                                 attrs.usenick = usenick;
+                                attrs.isfb = (res.role == "FB") ? true : false;
                                 createPost(attrs, function (res) {
                                     alert("successful commeted");
                                 });
@@ -58,6 +59,7 @@ define(['directives/directives', 'moment'],
                                     attrs.content = comment;
                                     attrs.categories = $scope.postType;
                                     attrs.usenick = true;
+                                attrs.isfb = false;
                                     createPost(attrs, function (res) {
                                         alert("successful commeted");
                                     });
@@ -106,7 +108,7 @@ define(['directives/directives', 'moment'],
                             } else if (res.displayname != undefined) { //deployd login
                                 $scope.currDisplayname = res.displayname;
                             }
-                       
+
                             deploydService.GetPostbyPostid(content.id, content.postType, function (res) {
                                 $scope.postid = res.id;
                                 $scope.postTitle = res.title;
@@ -122,7 +124,7 @@ define(['directives/directives', 'moment'],
                                 $scope.usenick = res.usenick;
                                 $('#overlay').hide();
                                 $element.find("#loading-indicator").hide();
-                            
+
                             $scope.thisPost = angular.copy(res);
                             checkPostAction($scope.thisPost);
                         });
@@ -212,23 +214,23 @@ define(['directives/directives', 'moment'],
                             $('#overlay').hide();
                         });
                     });
-                    
+
                     var processBlock = false;
-                    $scope.actionClicked = function(actionType,isActionType,e){
-                        if(!processBlock){
+                    $scope.actionClicked = function (actionType, isActionType, e) {
+                        if (!processBlock) {
                             processBlock = true;
-                            if($scope.thisPost[isActionType]){
+                            if ($scope.thisPost[isActionType]) {
                                 $scope.thisPost[actionType].splice($scope.thisPost[actionType].indexOf($scope.username));
                             }
-                            else{
+                            else {
                                 $scope.thisPost[actionType].push($scope.username);
                             }
-                            
+
                             var attr = {};
                             attr.id = $scope.thisPost.id;
                             attr[actionType] = $scope.thisPost[actionType];
-                            
-                            deploydService.UpdatePostAction(attr,actionType,$scope.postType,function(res){
+
+                            deploydService.UpdatePostAction(attr, actionType, $scope.postType, function (res) {
                                 $scope[actionType] = res[actionType].length;
                                 $scope.thisPost[isActionType] = !($scope.thisPost[isActionType]);
                                 processBlock = false;
@@ -245,19 +247,19 @@ define(['directives/directives', 'moment'],
                     else
                         return moment(date).format('DD-MM-YYYY, h:mm a');
                 };
-                
-                function checkPostAction(data){
-                    var actionString = ["liked","disliked","shited","loved"];
-                    var isActionString = ["isLiked","isDisliked","isShited","isLoved"];
-                    
-                    for(var i=0;i<actionString.length;i++){
+
+                function checkPostAction(data) {
+                    var actionString = ["liked", "disliked", "shited", "loved"];
+                    var isActionString = ["isLiked", "isDisliked", "isShited", "isLoved"];
+
+                    for (var i = 0; i < actionString.length; i++) {
                         $scope.thisPost[isActionString[i]] = false;
-                        data[actionString[i]].forEach(function(res){
-                            if(res == $scope.username)
+                        data[actionString[i]].forEach(function (res) {
+                            if (res == $scope.username)
                                 $scope.thisPost[isActionString[i]] = true;
                         })
                     }
-                    
+
                 }
             }
 
@@ -270,7 +272,7 @@ define(['directives/directives', 'moment'],
                             '<div class="modal-header">' +
                             '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
                             '<h4 class="modal-title">{{postTitle}}</h4>' +
-                            '<small class="text-muted"> {{postDate}} was posted by :{{postBy}}'+
+                            '<small class="text-muted"> {{postDate}} was posted by :{{postBy}}' +
                             '<i class="fa fa-star-o" aria-hidden="true" style="color:red" ng-if="usenick == true" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i></small>' +
                             '</div>' +
                             '<img src="img/loading.gif" id="loading-indicator" style="display:none" />' +
@@ -280,7 +282,7 @@ define(['directives/directives', 'moment'],
                             '</div>' +
                             '<div class="form-group">' +
                                 '<span><a class="btnLike actionBtn" ng-click="actionClicked(\'liked\',\'isLiked\',$event)" >&#128077; {{liked}} <span ng-if="!thisPost.isLiked">Like</span> <span ng-if="thisPost.isLiked">Liked</span> </a> </span>' +
-                                '<span><a class="btnDislike actionBtn" ng-click="actionClicked(\'disliked\',\'isDisliked\',$event)">&#128078; {{disliked}} <span ng-if="!thisPost.isDisliked">Dislike</span> <span ng-if="thisPost.isDisliked">Disliked</span></a> </span>'+
+                                '<span><a class="btnDislike actionBtn" ng-click="actionClicked(\'disliked\',\'isDisliked\',$event)">&#128078; {{disliked}} <span ng-if="!thisPost.isDisliked">Dislike</span> <span ng-if="thisPost.isDisliked">Disliked</span></a> </span>' +
                                 '<span><a class="btnShit actionBtn" style="color: brown;" ng-click="actionClicked(\'shited\',\'isShited\',$event)">&#128169; {{shited}} <span ng-if="!thisPost.isShited">Shit</span> <span ng-if="thisPost.isShited">Shited</span></a></span>' +
                                 '<span><a class="btnLove actionBtn" style="color:red;" ng-click="actionClicked(\'loved\',\'isLoved\',$event)">&#x2764; {{loved}} <span ng-if="!thisPost.isLoved">Love</span> <span ng-if="thisPost.isLoved">Loved</span></a> </span> ' +
                                 '<span><a class="btnComment actionBtn" style="color:#4acdea;" data-toggle="collapse" href="#collapseComment" >&#128172; {{commentedCount}} Comment </a> </span> ' +
