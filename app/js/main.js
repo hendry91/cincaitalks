@@ -113,7 +113,6 @@ require([
     '../sources/wallposting/snrwall',
     '../sources/wallposting/lnfwall',
     '../sources/about/about'
-    
 ],
 	function (angular) {
 

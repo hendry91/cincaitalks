@@ -26,7 +26,6 @@
                     refreshPost();
                 });
                 $(element).ready(function () {
-
                     deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
                         if (res.length > 0) {
                             $('#pagination').twbsPagination({
@@ -71,41 +70,27 @@
 
                         deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
                             scope.postdb = res;
-                            processResize(scope, element);
 
-                            $(element).find('.btnReadMore,.btnExpand').on('click', function (e) {
-                                var target = e.currentTarget.text;
-
-                                switch (target) {
-                                    case "Expand Now":
-                                        $(this).text('Collapse');
-                                        $(this.parentElement).find('.pContent').css('overflow', 'visible');
-                                        $(this.parentElement).find('.pContent').css('max-height', '');
-                                        break;
-                                    case "Read More":
-                                        break;
-                                    case "Collapse":
-                                        $(this).text('Expand Now');
-                                        $(this.parentElement).find('.pContent').css('overflow', 'hidden');
-                                        $(this.parentElement).find('.pContent').css('max-height', '300px');
-                                        break;
-                                }
-                            });
-
+                            window.setTimeout(function (res) {
+                                processResize(scope, element);
+                            }, 0);
                         });
-                    });
+                    })
                 }
 
 
                 scope.openPost = function (e) {
                     scope.currentPostTarget = this.post;
-                    if (!$(e.target).hasClass('dropdown-toggle') && !$(e.target).hasClass('dropdown-item')) {
+                    if (!$(e.target).hasClass('dropdown-toggle') && !$(e.target).hasClass('dropdown-item') && !$(e.target).hasClass('btnExpand') && !$(e.target).hasClass('card-img-top')) {
                         $rootScope.contentDetails = this.post;
                         $rootScope.contentDetails.postType = scope.pageCategories;
                         $rootScope.$broadcast('openPost');
                     }
                 }
-
+                scope.openImage = function (e) {
+                    scope.openImgUrl = this.post.image;
+                    $(element).find('#image-popup').modal('show');
+                }
                 scope.editPost = function (e) {
                     scope.currentPostTarget = this.post;
                     if (this.post.username != scope.currUser && scope.role != "admin") {
@@ -116,7 +101,6 @@
                         $rootScope.$broadcast('editPost');
                     }
                 }
-
                 scope.deletePost = function (e) {
                     scope.currentPostTarget = this.post;
                     if (this.post.username != scope.currUser && scope.role != "admin") {
@@ -129,14 +113,14 @@
                     }
                 }
 
-                $('#confirm-delete').on('show.bs.modal', function (e) {
+                $(element).find('#confirm-delete').on('show.bs.modal', function (e) {
                     var content = scope.currentPostTarget;
                     scope.postTitle = content.title;
                 });
 
-                element.find('.btnDeletePost').on('click', function (event) {
+                $(element).find('.btnDeletePost').on('click', function (event) {
                     if (scope.currUser == scope.currentPostTarget.username || scope.role == "admin") {
-                        var attrs = { id: scope.currentPostTarget.id, status: "D", updatedby: scope.currUser, lastdate : new Date() }
+                        var attrs = { id: scope.currentPostTarget.id, status: "D", updatedby: scope.currUser, lastdate: new Date() }
                         deploydService.DeletePost(attrs, scope.pageCategories, function (res) {
                             if (res.status == "D") {
                                 alert("your post has been deleted.");
@@ -167,6 +151,9 @@
                     }
                     deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
                         scope.postdb = res;
+                        window.setTimeout(function (res) {
+                            processResize(scope, element);
+                        }, 0);
                     });
                 }
 
@@ -174,8 +161,29 @@
                     var contentCount = $(element).find('.pContent');
                     angular.forEach(contentCount, function (res) {
                         checkOverflow(res, function (res) {
-                            $('<a class="btnExpand">Expand Now</a> or <a class="btnReadMore">Read More</a>').insertAfter(res);
+                            //$('<a class="btnExpand">Expand Now</a> or <a class="btnReadMore">Read More</a>').insertAfter(res);
+
+                            $('<a class="btnExpand">Expand Now</a>').insertAfter(res);
                         });
+                    });
+
+                    $(element).find('.btnExpand').on('click', function (e) {
+                        var target = e.currentTarget.text;
+
+                        switch (target) {
+                            case "Expand Now":
+                                $(this).text('Collapse');
+                                $(this.parentElement).find('.pContent').css('overflow', 'visible');
+                                $(this.parentElement).find('.pContent').css('max-height', '');
+                                break;
+                            //                                    case "Read More":       
+                            //                                        break;       
+                            case "Collapse":
+                                $(this).text('Expand Now');
+                                $(this.parentElement).find('.pContent').css('overflow', 'hidden');
+                                $(this.parentElement).find('.pContent').css('max-height', '250px');
+                                break;
+                        }
                     });
 
                     $('#loading').hide();
@@ -199,37 +207,39 @@
                 link: init,
                 controller: ['$scope', '$element', tableCtrl],
                 template: '<div class="row listWrapper" style="margin-top:20px">' +
-                            '<div class="card-columns">' +
+		'<div class="card-columns">' +
 
-                                '<div class="card cardContent" ng-repeat="post in postdb" ng-if="post.status == \'A\'" ng-click="openPost($event)">' +
-                                '<div ng-if="post.image == \'null\' && currUser != \'anonymous\' && currUser == post.username || role ==\'admin\'" style="position: absolute">' +
-                                '<a href="" style="color:#c53232" class="dropdown-toggle glyphicon glyphicon-menu-down btn-lg" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-                                '</a>' +
-                                '<div class="dropdown-menu" aria-labelledby="dpCategories" style="min-width:90px;max-width:90px">' +
-                                '<a class="dropdown-item" ng-click="editPost($event)">Edit</a>' +
-                                '<a class="dropdown-item" data-toggle="modal" ng-click="deletePost($event)">Delete</a>' +
-                                '</div>' +
-                                '</div>' +
+			'<div class="card cardContent" ng-repeat="post in postdb" ng-if="post.status == \'A\'" ng-click="openPost($event)">' +
 
-                                    '<img  ng-if="post.image != \'null\'" class="card-img-top" src="http://wowslider.com/sliders/demo-22/data1/images/peafowl.jpg" alt="Card image cap">' +
-                                '<div ng-if="post.image != \'null\' && currUser != \'anonymous\' && currUser == post.username || role == \'admin\'" style="position: absolute">' +
-                                '<a href="" style="color:#c53232" class="dropdown-toggle glyphicon glyphicon-menu-down btn-lg" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-                                '</a>' +
-                                '<div class="dropdown-menu" aria-labelledby="dpCategories" style="min-width:90px;max-width:90px">' +
-                                '<a class="dropdown-item" ng-click="editPost($event)">Edit</a>' +
-                                '<a class="dropdown-item" data-toggle="modal" ng-click="deletePost($event)">Delete</a>' +
-                                '</div>' +
-                                '</div>' +
-                                    '<div class="card-block ellipsis ">' +
-                                        '<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong> {{post.title}} </strong></h5>' +
-                                        '<p class="card-text pContent" style="max-height: 250px;overflow: hidden;" ng-bind-html = "post.content | newLine" ng-model="post.content" >  </p>' +
-                                        '<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by {{post.displayname}}' +
-                                        '<i class="fa fa-star-o" aria-hidden="true" style="color:red" ng-if="post.usenick == true" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i></small></p>' +
-                                    '</div>' +
-                                '</div>' +
+                //for no image card
+				'<div ng-if="post.image == \'null\' && currUser != \'anonymous\' && currUser == post.username || (role ==\'admin\' && post.image == \'null\')" style="position: absolute">' +
+				'<a href="" style="color:#c53232" class="dropdown-toggle glyphicon glyphicon-menu-down btn-lg" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+				'</a>' +
+				'<div class="dropdown-menu" aria-labelledby="dpCategories" style="min-width:90px;max-width:90px">' +
+				'<a class="dropdown-item" ng-click="editPost($event)">Edit</a>' +
+				'<a class="dropdown-item" data-toggle="modal" ng-click="deletePost($event)">Delete</a>' +
+				'</div>' +
+				'</div>' +
 
-                            '</div>' +
-                            '</div>' +
+                //for image card
+				'<img  ng-if="post.image != \'null\'" class="card-img-top" ng-click="openImage($event)" ng-src="{{post.image}}" alt="Card image cap">' +
+				'<div ng-if="post.image != \'null\' && currUser != \'anonymous\' && currUser == post.username || role == \'admin\'" style="position: absolute">' +
+					'<a href="" style="color:#c53232" class="dropdown-toggle glyphicon glyphicon-menu-down btn-lg" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+					'</a>' +
+					'<div class="dropdown-menu" aria-labelledby="dpCategories" style="min-width:90px;max-width:90px">' +
+						'<a class="dropdown-item" ng-click="editPost($event)">Edit</a>' +
+						'<a class="dropdown-item" data-toggle="modal" ng-click="deletePost($event)">Delete</a>' +
+					'</div>' +
+				'</div>' +
+					'<div class="card-block ellipsis ">' +
+						'<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong> {{post.title}} </strong></h5>' +
+						'<p class="card-text pContent" style="max-height: 250px;overflow: hidden;" ng-bind-html = "post.content | newLine" ng-model="post.content" >  </p>' +
+						'<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by {{post.displayname}}' +
+						'<i class="fa fa-star-o" aria-hidden="true" style="color:red" ng-if="post.usenick == true" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i></small></p>' +
+					'</div>' +
+			'</div>' +
+		'</div>' +
+'</div>' +
 
                             '<nav>' +
                             '<ul id="pagination" class="pagination-sm"></ul>' +
@@ -254,7 +264,20 @@
 '</div>' +
 '</div>' +
 '</div>' +
+'</div>' +
+'</div>' +
+
+'<div class="modal fade imageModal" id="image-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+'<div class="modal-dialog">' +
+'<div class="modal-content"> ' +
+'<div class="modal-body">' +
+'<button type="button" class="close" data-dismiss="modal" style="position: absolute;right: 20;"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+'<img class="imgOnScreen" style="width: 100%;" ng-src="{{openImgUrl}}">' +
+'</div>' +
+'</div>' +
+'</div>' +
 '</div>'
+
             };
         } ]);
 
