@@ -122,6 +122,8 @@ define(['directives/directives', 'moment'],
                                 $scope.postType = content.postType;
                                 $scope.commentedCount = res.commentedCount;
                                 $scope.usenick = res.usenick;
+                                $scope.isfb = res.isfb;
+                                $scope.username = res.username;
                                 $('#overlay').hide();
                                 $element.find("#loading-indicator").hide();
 
@@ -272,7 +274,8 @@ define(['directives/directives', 'moment'],
                             '<div class="modal-header">' +
                             '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
                             '<h4 class="modal-title">{{postTitle}}</h4>' +
-                            '<small class="text-muted"> {{postDate}} was posted by :{{postBy}}' +
+                            '<span ng-if="usenick == false && isfb == true"><small class="text-muted"> {{postDate}} was posted by <a href="http://www.facebook.com/{{username}}" target="_blank"  style="color:#a8168f">{{postBy}}</a></small></span>' +
+                            '<span ng-if="usenick == true || isfb == false"><small class="text-muted"> {{postDate}} was posted by {{postBy}}</small></span>' +
                             '<i class="fa fa-star-o" aria-hidden="true" style="color:red" ng-if="usenick == true" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i></small>' +
                             '</div>' +
                             '<img src="img/loading.gif" id="loading-indicator" style="display:none" />' +

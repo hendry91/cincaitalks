@@ -75,7 +75,7 @@
     background: #e43d3d;
 }
 
-
+/*start here when small screen will use this css*/
 .navbar-brand {
   float: none;
 }
@@ -91,6 +91,20 @@
 .navbar-nav .nav-link + .nav-link {
   margin-left: 0;
 }
+
+#my_postDetails_Modal .actionBtn
+{
+    cursor: pointer;
+    margin-right: 5px;
+}
+.aboutFont
+{
+    font-size: 35px;
+    font-weight: bold;
+}
+/*end here when small screen will use this css*/
+
+/*start here when large screen will use this css*/
 @media (min-width: 34em) {
   .navbar-brand {
     float: left;
@@ -109,8 +123,22 @@
   .dropdown-menu-right {
     right: 0;
     left: auto;
+    }
+    #my_postDetails_Modal .actionBtn{
+        font-size: 20px;
+        cursor: pointer;
+        margin-right: 5px;
+    }
+    .aboutFont
+    {   
+        font-size: 45px;
+        font-weight: bold;
+    }
 }
-}
+/*end here when large screen will use this css*/
+
+
+
 
 #loading-indicator {
   position: absolute;
@@ -144,19 +172,21 @@
     cursor: pointer;
     text-decoration: underline;
 }
-
-#my_postDetails_Modal .actionBtn{
-    font-size: 20px;
-    cursor: pointer;
-    margin-right: 5px;
-}
 .overflowauto
 {
     overflow:auto !important;
 }
+
 /* Set the image to middle screen */
 .imageModal {
   text-align: center;
+}
+
+.imageModal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
 }
 
 @media screen and (min-width: 768px) { 
@@ -173,4 +203,5 @@
   text-align: left;
   vertical-align: middle;
 }
+
 /* Set the image to middle screen */

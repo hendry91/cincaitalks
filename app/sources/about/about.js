@@ -9,49 +9,49 @@ define(['directives/directives'],
             }
             function init($scope, $element, $attrs) {
                 $($element).ready(function () {
-                $element.find('.btnSubmit').on('click', function (event) {
-                    var comment = $element.find('#comment').val();
+                    $element.find('.btnSubmit').on('click', function (event) {
+                        var comment = $element.find('#comment').val();
 
-                    if (comment == "") {
-                        $element.find('#comment').parent().find('.help-block').html('Please enter your comment.').css('color', 'red');
-                        return;
-                    } else if (comment.length < 10) {
-                        $element.find('#comment').parent().find('.help-block').html('Comment must more than 10 words.').css('color', 'red');
-                        return;
-                    } else {
-                        $element.find('#comment').parent().find('.help-block').html('');
-                        authServices.GetCurrentUser(function (res) {
-                            if (res.status == "active") {
-                                var attrs = {};
-                                attrs.username = res.displayname;
-                                attrs.content = comment;
-                                attrs.date = new Date();
+                        if (comment == "") {
+                            $element.find('#comment').parent().find('.help-block').html('Please enter your comment.').css('color', 'red');
+                            return;
+                        } else if (comment.length < 10) {
+                            $element.find('#comment').parent().find('.help-block').html('Comment must more than 10 words.').css('color', 'red');
+                            return;
+                        } else {
+                            $element.find('#comment').parent().find('.help-block').html('');
+                            authServices.GetCurrentUser(function (res) {
+                                if (res.status == "active") {
+                                    var attrs = {};
+                                    attrs.username = res.displayname;
+                                    attrs.content = comment;
+                                    attrs.date = new Date();
 
-                                deploydService.CreateFeedback(attrs, "feedback", function (res) {
-                                    if (res.id != undefined) {
-                                        alert('feedback form submitted.');
-                                        $element.find('#comment').val('');
-                                    }
-                                });
-                            } else {
-                                var attrs = {};
-                                attrs.username = "anonymous";
-                                attrs.content = comment;
-                                attrs.date = new Date();
+                                    deploydService.CreateFeedback(attrs, "feedback", function (res) {
+                                        if (res.id != undefined) {
+                                            alert('feedback form submitted.');
+                                            $element.find('#comment').val('');
+                                        }
+                                    });
+                                } else {
+                                    var attrs = {};
+                                    attrs.username = "anonymous";
+                                    attrs.content = comment;
+                                    attrs.date = new Date();
 
-                                deploydService.CreateFeedback(attrs, "publicfeedback", function (res) {
-                                    if (res.id != undefined) {
-                                        alert('feedback form submitted.');
-                                        $element.find('#comment').val('');
-                                    }
-                                });
-                            }
-                        });
+                                    deploydService.CreateFeedback(attrs, "publicfeedback", function (res) {
+                                        if (res.id != undefined) {
+                                            alert('feedback form submitted.');
+                                            $element.find('#comment').val('');
+                                        }
+                                    });
+                                }
+                            });
 
 
-                    }
+                        }
 
-                });
+                    });
                     $('#loading').hide();
                     $('#overlay').hide();
                 });
@@ -62,8 +62,17 @@ define(['directives/directives'],
                 link: init,
                 template: '<div class="aboutUs container-fluid" style="margin-top:20px">' +
 '<div class="jumbotron">' +
-'<h1 class="display-3">Hello, TARUCIAN!</h1>' +
+'<h1 class="display-3 aboutFont">Hello</h1>' +
+'<h1 class="display-3 aboutFont">TARUCIAN!</h1>' +
 '<p class="lead">This is a non-profit organization website for taruc communication purpose.</p>' +
+'<hr class="m-y-2">' +
+
+'<p>Cincaitalks privacy rules: </p>' +
+'<i class="fa fa-star-o" aria-hidden="true" style="color:red" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i> : This star mean the author use custom nickname to post.</small></p>' +
+'<p>All name with <span style="color:#a8168f">purple color</span> (eg:posted by : <a href="https://www.facebook.com/confessionstarc/" target="_blank" style="color:#a8168f">TARUC</a> ) mean posted/commented with connected facebook user.' +
+' When the facebook user didnt use nickname(hide the real name) to post/comment then only will shown this <span style="color:#a8168f">color</span> with hyperlink to allow people to open their facebook.'+
+' If the facebook user used nickname to post/comment, the name only will show with normal(no color, no hyperlink), nobody will know that poster/commenter facebook.</p>' +
+
 '<hr class="m-y-2">' +
 '<p>If you have any feedback for us to improving this website, you may proceed to submit the form below.</p>' +
 '<div class="form-group">' +

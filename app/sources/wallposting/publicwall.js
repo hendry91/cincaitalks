@@ -81,7 +81,8 @@
 
                 scope.openPost = function (e) {
                     scope.currentPostTarget = this.post;
-                    if (!$(e.target).hasClass('dropdown-toggle') && !$(e.target).hasClass('dropdown-item') && !$(e.target).hasClass('btnExpand') && !$(e.target).hasClass('card-img-top')) {
+                    if (!$(e.target).hasClass('dropdown-toggle') && !$(e.target).hasClass('dropdown-item') && !$(e.target).hasClass('btnExpand')
+                    && !$(e.target).hasClass('card-img-top') && !($(e.target).attr('href') !=undefined)) {
                         $rootScope.contentDetails = this.post;
                         $rootScope.contentDetails.postType = scope.pageCategories;
                         $rootScope.$broadcast('openPost');
@@ -234,13 +235,14 @@
 					'<div class="card-block ellipsis ">' +
 						'<h5 class="card-title" style="color:#1515d1;border-bottom: solid 1px black;"><strong> {{post.title}} </strong></h5>' +
 						'<p class="card-text pContent" style="max-height: 250px;overflow: hidden;" ng-bind-html = "post.content | newLine" ng-model="post.content" >  </p>' +
-						'<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by {{post.displayname}}' +
+						'<p class="card-text"><small class="text-muted"> {{formatFromTodayDate(post.date)}} posted by '+
+                        '<span ng-if="post.isfb == true && post.usenick == false"><a href="https://www.facebook.com/{{post.username}}" target="_blank"  style="color:#a8168f">{{post.displayname}}</a></span>' +
+                        '<span ng-if="post.isfb == false || post.usenick == true">{{post.displayname}}</span>' +
 						'<i class="fa fa-star-o" aria-hidden="true" style="color:red" ng-if="post.usenick == true" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i></small></p>' +
 					'</div>' +
 			'</div>' +
 		'</div>' +
 '</div>' +
-
                             '<nav>' +
                             '<ul id="pagination" class="pagination-sm"></ul>' +
                             '</nav>' +
