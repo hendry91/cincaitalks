@@ -19,7 +19,8 @@ define(['services/services'],
                     publicfeedback: "publicfeedback",
                     comment: "comment",
                     backuppost : "backuppost",
-                    lnf : "lnf"
+                    lnf : "lnf",
+                    backupcomment : "backupcomment"
                 };
 
                 //=============================== AJAX CALLS DEFINITION =====================================================
@@ -31,6 +32,7 @@ define(['services/services'],
                     create: { method: 'POST', params: { object: ""} },
                     update : { method: 'PUT', params: { object: ""} }
                 });
+                
                 var fbCheckUser =  $resource(prefixurl + "/users?:object", null, {
                     check : { method: 'GET', params: { object: ""},isArray: true }
                 });
@@ -52,11 +54,13 @@ define(['services/services'],
                     createFeedb: { method: 'POST', params: { path:"", object: ""} },
                     createComment: { method: 'POST', params: { path:"", object: ""} },
                     update: {method : 'PUT' , params:{ path:"",object: ""} },
-                    addBackup: { method: 'POST', params: { path:"", object: ""} }
+                    addBackup: { method: 'POST', params: { path:"", object: ""} },
+                    addCommentbackup: { method: 'POST', params: { path:"", object: ""} }
                 });
 
                 var comment = $resource(prefixurl + "/comment?:object", null, {
-                    getCommentbyId: {method: 'GET',params: {object: ""},isArray: true}
+                    getCommentbyId: {method: 'GET',params: {object: ""},isArray: true},
+                    update : { method: 'PUT', params: { object : ""} }
                 });
 
 
@@ -198,7 +202,8 @@ define(['services/services'],
                 function getCommentbyPostid(id, type, callback){
                     var request = {
                         postid: id, 
-                        $sort: {"date":-1}
+                        $sort: {"date":-1},
+                        status: {$ne : "D"}
                     };
 
                     var get = comment.getCommentbyId({ object : JSON.stringify(request)},
@@ -321,6 +326,42 @@ define(['services/services'],
 						function (success) { responseSuccess(success, null, callback) },
 						function (error) { responseError(error, callback) });
                 };
+                
+                function deleteComment(attrs, callback){
+                    var request = attrs;
+                    
+					var update = comment.update(JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
+                
+                function updateComment(attrs, callback){
+                    var request = { 
+                        id: attrs.commentid, 
+                        content: attrs.content, 
+                        updatedby: attrs.updatedby,
+                        lastdate : attrs.lastdate 
+                    };
+                    
+					var update = comment.update(JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                }
+                
+                function addCommentBackup(attrs, type, callback) {
+                    var request = {
+                        commentid : attrs.commentid,
+						username : attrs.username,
+						content : attrs.content,
+						date : new Date(),
+//                      title: attrs.title,
+//						image : attrs.image,
+					};
+                    var type = path[type];
+					var creteComment = create.addCommentbackup({path : type}, JSON.stringify(request),
+						function (success) { responseSuccess(success, null, callback) },
+						function (error) { responseError(error, callback) });
+                };
 
                 //EXAMPLE : SRART
 //              function getxxxList(callback){
@@ -382,12 +423,15 @@ define(['services/services'],
                     GetPostbyUsername: getPostbyUsername,
 
 
-                    CreatePost: createPost,
+                    CreatePost : createPost,
                     Addbackup : addbackup, 
                     UpdatePostAction : updatePostAction,
-                    CreateComment:createComment, 
-                    GetCommentbyPostid: getCommentbyPostid,
-                    GetPostbyPostid:getPostbyPostid,
+                    CreateComment : createComment,
+                    AddCommentBackup : addCommentBackup, 
+                    DeleteComment : deleteComment,
+                    UpdateComment : updateComment,
+                    GetCommentbyPostid : getCommentbyPostid,
+                    GetPostbyPostid : getPostbyPostid,
 
                     DeletePost: deletePost,
                     UpdatePost:updatePost,
