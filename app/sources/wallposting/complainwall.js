@@ -28,17 +28,23 @@
                 $(element).ready(function () {
                     deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
                         if (res.length > 0) {
-                            $('#pagination').twbsPagination({
-                                totalPages: Math.ceil(res.length / itemPerPage), //round up decimal +1
-                                visiblePages: 10,
-                                onPageClick: function (event, page) {
-                                    $('#loading').show();
-                                    $('#overlay').show();
-                                    toGetPost(page);
-                                    //$('#page-content').text('Page ' + page);
-                                }
-                                //href: '?page={{number}}'
-                            });
+                            if (res.length <= itemPerPage) {
+                                $('#loading').show();
+                                $('#overlay').show();
+                                toGetPost(1);
+                            } else {
+                                $('#pagination').twbsPagination({
+                                    totalPages: Math.ceil(res.length / itemPerPage), //round up decimal +1
+                                    visiblePages: 10,
+                                    onPageClick: function (event, page) {
+                                        $('#loading').show();
+                                        $('#overlay').show();
+                                        toGetPost(page);
+                                        //$('#page-content').text('Page ' + page);
+                                    }
+                                    //href: '?page={{number}}'
+                                });
+                            }
                         } else {
                             $('#loading').hide();
                             $('#overlay').hide();
