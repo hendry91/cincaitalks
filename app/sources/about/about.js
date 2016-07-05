@@ -9,6 +9,7 @@ define(['directives/directives'],
             }
             function init($scope, $element, $attrs) {
                 $($element).ready(function () {
+
                     $element.find('.btnSubmit').on('click', function (event) {
                         var comment = $element.find('#comment').val();
 
@@ -67,11 +68,11 @@ define(['directives/directives'],
 '<p class="lead">This is a non-profit organization website for taruc communication purpose.</p>' +
 '<hr class="m-y-2">' +
 
-'<p>Cincaitalks privacy rules: </p>' +
-'<i class="fa fa-star-o" aria-hidden="true" style="color:red" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i> : This star mean the author use custom nickname to post.</small></p>' +
-'<p>All name with <span style="color:#a8168f">purple color</span> (eg:posted by : <a href="https://www.facebook.com/confessionstarc/" target="_blank" style="color:#a8168f">TARUC</a> ) mean posted/commented with connected facebook user.' +
-' When the facebook user didnt use nickname(hide the real name) to post/comment then only will shown this <span style="color:#a8168f">color</span> with hyperlink to allow people to open their facebook.'+
-' If the facebook user used nickname to post/comment, the name only will show with normal(no color, no hyperlink), nobody will know that poster/commenter facebook.</p>' +
+'<div style="text-align: left;"><p>Cincaitalks.com privacy rules: </p></div>' +
+'<div style="text-align: left;"><i class="fa fa-star-o" aria-hidden="true" style="color:red" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i> : This star mean the author use custom nickname to post.</small></p></div>' +
+'<div style="text-align: left;"><p>All name with <span style="color:#a8168f">purple color</span> (eg:posted by : <a href="https://www.facebook.com/confessionstarc/" target="_blank" style="color:#a8168f">TARUC</a> ) mean posted/commented with connected facebook user.' +
+' When the facebook user didnt use nickname(hide the real name) to post/comment then only will shown this <span style="color:#a8168f">color</span> with hyperlink to allow people to open their facebook.' +
+' If the facebook user used nickname to post/comment, the name only will show with normal(no color, no hyperlink), nobody will know the poster/commenter facebook.</p></div>' +
 
 '<hr class="m-y-2">' +
 '<p>If you have any feedback for us to improving this website, you may proceed to submit the form below.</p>' +
@@ -83,7 +84,7 @@ define(['directives/directives'],
 '<button class="btn btn-primary btnSubmit" type="submit">Submit</button>' +
 '</div>' +
 '</div>' +
-                            '</div>',
+'</div>',
                 controller: ['$scope', '$element', tableCtrl]
             };
         } ]);

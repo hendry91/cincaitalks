@@ -64,6 +64,7 @@ define(['directives/directives'],
                         // event.preventDefault(); // To prevent following the link (optional)
 
                         //$('.categoriesFieldset > .form-group  input:radio:checked') get checked radio
+
                         var chkNickname = $element.find('input#chkNickname').is(':checked');
 
                         if (chkNickname) {
@@ -80,9 +81,10 @@ define(['directives/directives'],
 
                         var inputTitle = $element.find('.txtTitle').val();
                         if (inputTitle == "") {
+                            $element.find('.txtTitle').parent().find('.help-block').html('Please enter your title').css('color', 'red');
                             return;
-                        } else if (inputTitle.length < 3 || inputTitle.length > 30) {
-                            $element.find('.txtTitle').parent().find('.help-block').html('Length must between 3 - 30.').css('color', 'red');
+                        } else if (inputTitle.length < 3 || inputTitle.length > 28) {
+                            $element.find('.txtTitle').parent().find('.help-block').html('Length must between 3 - 28.').css('color', 'red');
                             return;
                         } else {
                             $element.find('.txtTitle').parent().find('.help-block').html('');
@@ -121,45 +123,127 @@ define(['directives/directives'],
                             isfb: $scope.isfb
                         };
 
-                        switch (checkedCategories) {
-                            case "Other":
-                                proceedCreateAPI(attrs, "other");
-                                break;
-                            case "BehTahan":
-                                proceedCreateAPI(attrs, "complain");
-                                break;
-                            case "F&B":
-                                proceedCreateAPI(attrs, "fnb");
-                                break;
-                            case "Sport":
-                                proceedCreateAPI(attrs, "sport");
-                                break;
-                            case "LoveStory":
-                                proceedCreateAPI(attrs, "love");
-                                break;
-                            case "Entertainment":
-                                proceedCreateAPI(attrs, "entertainment");
-                                break;
-                            case "S&R":
-                                proceedCreateAPI(attrs, "salesnrent");
-                                break;
-                            case "L&F":
-                                proceedCreateAPI(attrs, "lnf");
-                                break;
-                            default:
-                                proceedCreateAPI(attrs, "public");
-                                break;
+                        if ($($element).find("#imgInp").val() != undefined) {
+                            authServices.RequestAccessToken(function(res){
+                                if(res.access_token != undefined){
+                                    checkUploadImage(res.access_token, function (res) {
+                                        if(res.status != 200){
+                                            alert("There was something wrong, please contact admin with this error message [" + JSON.parse(res.responseText).data.error + "]");
+                                        }else{
+                                            attrs.image = res.data.link;
+                                            submitPost(attrs, checkedCategories);
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            submitPost(attrs, checkedCategories);
                         }
                     });
 
                     $element.find('.cancelPost').on('click', function (event) {
                         $element.modal('hide');
                     });
+
+                    $($element).find("#imgInp").change(function () {
+                        imageValidation(this);
+                    });
+
+                    $scope.closePreview = function () {
+                        $($element).find("#imgInp").val('');
+                        $scope.previewImg = " ";
+                        $scope.imgLoaded = false;
+                        $scope.imgProgress = false;
+                        window.setTimeout(function () {
+                            $($element).find('.previewIMG').attr('src', '');
+                        }, 0);
+                    }
                 });
 
                 $("#my_create_post_Modal").on('hidden.bs.modal', function () {
                     resetField();
                 });
+
+                function submitPost(attrs, checkedCategories) {
+                    switch (checkedCategories) {
+                        case "Other":
+                            proceedCreateAPI(attrs, "other");
+                            break;
+                        case "BehTahan":
+                            proceedCreateAPI(attrs, "complain");
+                            break;
+                        case "F&B":
+                            proceedCreateAPI(attrs, "fnb");
+                            break;
+                        case "Sport":
+                            proceedCreateAPI(attrs, "sport");
+                            break;
+                        case "LoveStory":
+                            proceedCreateAPI(attrs, "love");
+                            break;
+                        case "Entertainment":
+                            proceedCreateAPI(attrs, "entertainment");
+                            break;
+                        case "S&R":
+                            proceedCreateAPI(attrs, "salesnrent");
+                            break;
+                        case "L&F":
+                            proceedCreateAPI(attrs, "lnf");
+                            break;
+                        default:
+                            proceedCreateAPI(attrs, "public");
+                            break;
+                    }
+                }
+
+                function checkUploadImage(access_token, callback) {
+                    var input = $($element).find("#imgInp")[0];
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var code = e.target.result.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
+                            $.ajax({
+                                xhr: function () {
+                                    var xhr = new window.XMLHttpRequest();
+                                    $scope.imgProgress = true;
+                                    xhr.upload.addEventListener("progress", function (evt) {
+                                        if (evt.lengthComputable) {
+                                            var percentComplete = evt.loaded / evt.total;
+                                            percentComplete = parseInt(percentComplete * 100);
+                                            console.log(percentComplete);
+                                            $scope.$apply(function () {
+                                                $scope.progressUpload = percentComplete;
+                                            });
+                                            if (percentComplete === 100) {
+
+                                            }
+
+                                        }
+                                    }, false);
+                                    return xhr;
+                                },
+                                url: 'https://api.imgur.com/3/image',
+                                type: "POST",
+                                datatype: "json",
+                                data: {
+                                    image: code,
+                                    type: 'base64',
+                                    album: '3VqTp'
+                                },
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader("Authorization", "Bearer " + access_token + "");
+                                },
+                                success: function (e) {
+                                    callback(e);
+                                },
+                                error: function (e) {
+                                    callback(e);
+                                },
+                            });
+                        }
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
 
                 function proceedCreateAPI(attrs, categoriesType) {
                     deploydService.CreatePost(attrs, categoriesType, function (res) {
@@ -181,6 +265,14 @@ define(['directives/directives'],
                         $scope.isCheck = false;
                         $scope.isDisable = true;
                         $scope.disableNickname = false;
+                        $($element).find("#imgInp").val('');
+                        $scope.previewImg = " ";
+                        $scope.imgLoaded = false;
+                        $scope.imgProgress = false;
+                        $scope.progressUpload = 0;
+                        window.setTimeout(function () {
+                            $($element).find('.previewIMG').attr('src', '');
+                        }, 0);
                     } else {
                         $element.find('.inputNickname').val('');
                         $element.find('.txtTitle').val('');
@@ -190,9 +282,41 @@ define(['directives/directives'],
                         $element.find('input#chkNickname').prop('checked', true);
                         $scope.isCheck = true;
                         $scope.isDisable = false;
+                        $($element).find("#imgInp").val('');
+                        $scope.previewImg = " ";
+                        $scope.imgLoaded = false;
+                        $scope.imgProgress = false;
+                        $scope.progressUpload = 0;
+                        window.setTimeout(function () {
+                            $($element).find('.previewIMG').attr('src', '');
+                        }, 0);
                     }
                 }
 
+                function imageValidation(input) {
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            $scope.$apply(function () {
+                                $scope.previewImg = e.target.result;
+                                $scope.imgLoaded = true;
+                            });
+                        }
+                        if (input.files[0].type == "image/jpeg" || input.files[0].type == "image/png" || input.files[0].type == "image/jpeg") {
+                            reader.readAsDataURL(input.files[0]);
+                        } else {
+                            alert("Only supported jpg/jpeg/png image type.")
+                        }
+                    } else {
+                        $scope.$apply(function () {
+                            $scope.previewImg = " ";
+                            $scope.imgLoaded = false;
+
+                        });
+                        $($element).find('.previewIMG').attr('src', '');
+                    }
+                }
             }
 
             return {
@@ -220,7 +344,7 @@ define(['directives/directives'],
 '</div>' +
 '<div class="form-group">' +
 '<label for="usr">Post Title : </label>' +
-'<input type="text" class="form-control txtTitle" required data-minlength="5" maxlength="30" id="usr" placeholder="Enter your post Title.">' +
+'<input type="text" class="form-control txtTitle" required data-minlength="5" maxlength="28" id="usr" placeholder="Enter your post Title.">' +
 '<div class="help-block with-errors"></div>' +
 '</div>' +
 '<fieldset class="categoriesFieldset" ng-disabled="disableCategories">' +
@@ -261,7 +385,16 @@ define(['directives/directives'],
 '<textarea class="form-control txtComment" rows="5" id="comment" data-minlength="15" maxlength="5000" required></textarea>' +
 '<div class="help-block with-errors"></div>' +
 '</div>' +
-
+'<div class="form-group" style="text-align: left">' +
+'<form id="form1" runat="server">' +
+'<input type="file" id="imgInp" style="width: 220px;" />' +
+'<img ng-src="{{previewImg}}" class="previewIMG img-rounded" alt="Image Preview" style="max-height: 30px;" />' +
+'<button type="button" class="close" style="float:none;margin-left:3px" ng-show="imgLoaded" ng-click="closePreview()">x</button>' +
+'</form>' +
+'</div>' +
+'<div class="form-group" style="text-align: left">' +
+'<progress class="progress progress-striped progress-success" value="{{progressUpload}}" max="100" ng-show="imgProgress"></progress>' +
+'</div>' +
 '<div class="modal-footer form-group">' +
 '<button type="submit" class="btn btn-default submitPost">Submit</button>' +
 '<button type="button" class="btn btn-default cancelPost">Close</button>' +
