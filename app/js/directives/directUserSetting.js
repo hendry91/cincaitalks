@@ -46,29 +46,29 @@ define(['directives/directives'],
                                     currUser = angular.copy(res);
                                     
                                     deploydService.UserLogin({username: currUser.username,password: oldPassword},function(res){
-                                changePwBtn.removeClass("disabled");
-                                if(res.id == undefined){
-                                    $element.find(".help-block").html('Incorrect Old Password').css('color', 'red');
-                                }else{
-                                    if(newPassword != cfmNewPassword)
-                                    $element.find(".help-block").html('New Password unmatch Confirm Password').css('color', 'red');
-                                    else{
-                                        $element.find(".help-block").html('');
-                                        var attr = {
+                                        changePwBtn.removeClass("disabled");
+                                        if(res.id == undefined){
+                                            $element.find(".help-block").html('Incorrect Old Password').css('color', 'red');
+                                        }else{
+                                            if(newPassword != cfmNewPassword)
+                                                $element.find(".help-block").html('New Password unmatch Confirm Password').css('color', 'red');
+                                            else{
+                                                $element.find(".help-block").html('');
+                                                var attr = {
                                                     id : currUser.id,
-                                            password : cfmNewPassword
+                                                    password : cfmNewPassword
+                                                }
+                                                deploydService.UpdateUser(attr,function(res){
+                                                    alert("Password Changed Sucessful");
+                                                    changePwBtn.removeClass("disabled");
+                                                    $element.find("#my_settingPW_Modal").find(".cancel").click();
+                                                });
+                                            }
                                         }
-                                        deploydService.UpdateUser(attr,function(res){
-                                            alert("Password Changed Sucessful");
-                                            changePwBtn.removeClass("disabled");
-                                            $element.find("#my_settingPW_Modal").find(".cancel").click();
-                                        });
-                                    }
+                                    })
                                 }
-                            })
-                        }
-                    });
-                    
+                            });
+                            
                             
                         }
                     });
@@ -109,6 +109,7 @@ define(['directives/directives'],
                                 email : email,
                                 gender : $scope.thisUser.gender,
                                 faculty : $scope.thisUser.faculty,
+                                loadimgbydefault : $scope.thisUser.loadimgbydefault
                             }
                         
                             deploydService.UpdateUser(attr,function(res){
@@ -245,6 +246,12 @@ define(['directives/directives'],
                         '</div>' +
                         '<div class="setting-help-block with-errors"></div>' +
                         '</div>' +
+                        
+                        '<div class="form-group">' +
+                        '<input type="checkbox" ng-model="thisUser.loadimgbydefault" ng-bind="thisUser.loadimgbydefault"'+
+                        '<label for="gender" class="control-label"> Show Picture on Post (Untick to reduce data usage) </label>' +
+                        '</div>' +
+                        
                         '<div class="modal-footer  form-group">' +
                         '<button type="submit" class="btn btn-default update">Update</button>' +
                         '<button type="button" class="btn btn-default cancel" data-dismiss="modal">Close</button>' +

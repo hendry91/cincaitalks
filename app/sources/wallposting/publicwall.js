@@ -17,10 +17,12 @@
                             scope.currUser = "anonymous";
                             scope.displayname = "anonymous";
                             scope.role = undefined;
+                            scope.loadimgbydefault = true;
                         } else if (res.status == "active") { //deployd login
                             scope.currUser = res.username;
                             scope.displayname = res.displayname;
                             scope.role = res.role;
+                            scope.loadimgbydefault = res.loadimgbydefault;
                         }
                     });
                     refreshPost();
@@ -68,10 +70,12 @@
                             scope.currUser = "anonymous";
                             scope.displayname = "anonymous";
                             scope.role = undefined;
+                            scope.loadimgbydefault = true;
                         } else if (res.status == "active") { //deployd login
                             scope.currUser = res.username;
                             scope.displayname = res.displayname;
                             scope.role = res.role;
+                            scope.loadimgbydefault = res.loadimgbydefault;
                         }
 
                         deploydService.GetPostbyLimit(attrs, scope.pageCategories, function (res) {
@@ -229,7 +233,8 @@
 				'</div>' +
 
                 //for image card
-				'<img  ng-if="post.image != \'null\'" class="card-img-top" ng-click="openImage($event)" ng-src="{{post.image}}" alt="Card image cap">' +
+                '<img  ng-if="post.image != \'null\' && !loadimgbydefault" class="card-img-top" ng-click="openImage($event)" alt="Data Saving Mode" style="height: 30px;color:hsl(300, 69%, 53%);">' +
+				'<img  ng-if="post.image != \'null\' &&  loadimgbydefault" class="card-img-top" ng-click="openImage($event)" ng-src="{{post.image}}" alt="Card image cap">' +
 				'<div ng-if="post.image != \'null\' && currUser != \'anonymous\' && currUser == post.username || role == \'admin\'" style="position: absolute">' +
 					'<a href="" style="color:#c53232" class="dropdown-toggle glyphicon glyphicon-menu-down btn-lg" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
 					'</a>' +
