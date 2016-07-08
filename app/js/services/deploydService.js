@@ -4,7 +4,7 @@ define(['services/services'],
             function ($resource) {
 
                 //var prefixurl = "http://localhost:2403";
-                var prefixurl = "http://52.86.236.155:9090";
+                var prefixurl = "http://52.203.59.239:8080";
 
                 var path = {
                     other: "other",
