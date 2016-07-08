@@ -112,7 +112,7 @@ define(['services/services'],
 
                                         deploydService.CreateUser(attrs, function (res) {
                                             if (res.id != undefined) {
-                                                alert('New is created, please modify your details.');
+                                                //alert('New is created, please modify your details.');
                                                 callback(res);
                                             }
                                         });
