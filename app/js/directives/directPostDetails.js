@@ -465,6 +465,7 @@ define(['directives/directives', 'moment'],
                                     '</div>' +
                                 '</div>' +
                                 '<form role="form">' +
+                                    '<div style="margin-left:10px;color:red" ng-if="currDisplayname == \'anonymous\' && !( postType == \'public\' )" >Please login to comment</div>'+
                                     '<div class="form-group card-block card" ng-if="(postType != \'public\' && currDisplayname != \'anonymous\') || ( postType == \'public\' )">' +
                                         '<textarea class="form-control" rows="3" id="comment" placeholder="Enter comment" ></textarea>' +
                                         '<div class="help-block with-errors"></div>' +
