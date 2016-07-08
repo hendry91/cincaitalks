@@ -102,6 +102,10 @@
     font-size: 35px;
     font-weight: bold;
 }
+
+.navbar-right{
+    height:auto;
+}
 /*end here when small screen will use this css*/
 
 /*start here when large screen will use this css*/
@@ -119,6 +123,7 @@
   }
   .navbar-right {
     float: right;
+    height:30px;
   }
   .dropdown-menu-right {
     right: 0;
