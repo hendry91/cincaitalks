@@ -196,12 +196,60 @@ define(['directives/directives'],
                     }
                 }
 
+                function resizeMe(img) {
+                  var canvas = document.createElement('canvas');
+
+                  var width = img.width;
+                  var height = img.height;
+                  var max_width = 800;
+                  var max_height = 600; 
+                  // calculate the width and height, constraining the proportions
+                  if (width > height) {
+                    if (width > max_width) {
+                      //height *= max_width / width;
+                      height = Math.round(height *= max_width / width);
+                      width = max_width;
+                    }
+                  } else {
+                    if (height > max_height) {
+                      //width *= max_height / height;
+                      width = Math.round(width *= max_height / height);
+                      height = max_height;
+                    }
+                  }
+  
+                  // resize the canvas and draw the image data into it
+                  canvas.width = width;
+                  canvas.height = height;
+                  var ctx = canvas.getContext("2d");
+                  ctx.drawImage(img, 0, 0, width, height);
+  
+                  return canvas.toDataURL("image/jpeg",0.7); // get the data from canvas as 70% JPG (can be also PNG, etc.)
+
+                }
+
                 function checkUploadImage(access_token, callback) {
                     var input = $($element).find("#imgInp")[0];
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
+                        reader.readAsArrayBuffer(input.files[0]);
                         reader.onload = function (e) {
-                            var code = e.target.result.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
+                            //var code = e.target.result.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
+                            
+                            // blob stuff
+                          var blob = new Blob([e.target.result]); // create blob...
+                          window.URL = window.URL || window.webkitURL;
+                          var blobURL = window.URL.createObjectURL(blob); // and get it's URL
+      
+                          // helper Image object
+                          var image = new Image();
+                          image.src = blobURL;
+                            
+                        image.onload = function() {
+                            // have to wait till it's loaded
+                            var resizedbase64 = resizeMe(image); // send it to canvas
+                            var code = resizedbase64.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
+
                             $.ajax({
                                 xhr: function () {
                                     var xhr = new window.XMLHttpRequest();
@@ -238,10 +286,13 @@ define(['directives/directives'],
                                 },
                                 error: function (e) {
                                     callback(e);
-                                },
+                                }
                             });
+                            //reader.readAsDataURL(input.files[0]);
+                            }
+
+
                         }
-                        reader.readAsDataURL(input.files[0]);
                     }
                 }
 
