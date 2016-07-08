@@ -123,21 +123,21 @@ define(['directives/directives'],
                             isfb: $scope.isfb
                         };
 
-                        if ($($element).find("#imgInp").val() != undefined) {
-                            authServices.RequestAccessToken(function(res){
-                                if(res.access_token != undefined){
+                        if ($($element).find("#imgInp").val() == undefined || $($element).find("#imgInp").val() == "") {
+                            submitPost(attrs, checkedCategories);
+                        } else {
+                            authServices.RequestAccessToken(function (res) {
+                                if (res.access_token != undefined) {
                                     checkUploadImage(res.access_token, function (res) {
-                                        if(res.status != 200){
+                                        if (res.status != 200) {
                                             alert("There was something wrong, please contact admin with this error message [" + JSON.parse(res.responseText).data.error + "]");
-                                        }else{
+                                        } else {
                                             attrs.image = res.data.link;
                                             submitPost(attrs, checkedCategories);
                                         }
                                     });
                                 }
                             });
-                        } else {
-                            submitPost(attrs, checkedCategories);
                         }
                     });
 
