@@ -285,7 +285,7 @@
 '<div class="modal-content"> ' +
 '<div class="modal-body">' +
 '<button type="button" class="close" data-dismiss="modal" style="position: absolute;right: 20;"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
-'<img class="imgOnScreen" style="width: 100%;" ng-src="{{openImgUrl}}">' +
+'<img class="imgOnScreen" style="width: 100%;height:80%" ng-src="{{openImgUrl}}">' +
 '</div>' +
 '</div>' +
 '</div>' +

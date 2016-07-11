@@ -65,6 +65,9 @@ define(['directives/directives'],
 
                         //$('.categoriesFieldset > .form-group  input:radio:checked') get checked radio
 
+                        $('#loading').show();
+                        $('#overlay').show();
+
                         var chkNickname = $element.find('input#chkNickname').is(':checked');
 
                         if (chkNickname) {
@@ -125,9 +128,7 @@ define(['directives/directives'],
                         if ($($element).find("#imgInp").val() == undefined || $($element).find("#imgInp").val() == "") {
                             submitPost(attrs, checkedCategories);
                         } else {
-
-                            deploydService.GetAccess(function (res) {
-                                if (res != undefined) {
+                            authServices.RequestAccessToken(function (res) {
                                     if (res.access_token != undefined) {
                                         checkUploadImage(res.access_token, function (res) {
                                             if (res.status != 200) {
@@ -137,22 +138,12 @@ define(['directives/directives'],
                                                 submitPost(attrs, checkedCategories);
                                             }
                                         });
-                                    }
+                                } else if (res == -1) {
+                                    alert("Something wrong with the server, please report to admin with code : Ime99nw.");
+                                    $('#loading').hide();
+                                    $('#overlay').hide();
                                 }
                             });
-
-//                            authServices.RequestAccessToken(function (res) {
-//                                if (res.access_token != undefined) {
-//                                    checkUploadImage(res.access_token, function (res) {
-//                                        if (res.status != 200) {
-//                                            alert("There was something wrong, please contact admin with this error message [" + JSON.parse(res.responseText).data.error + "]");
-//                                        } else {
-//                                            attrs.image = res.data.link;
-//                                            submitPost(attrs, checkedCategories);
-//                                        }
-//                                    });
-//                                }
-//                            });
                         }
                     });
 
@@ -312,6 +303,8 @@ define(['directives/directives'],
                         if (res != undefined && res.id != undefined) {
                             alert("Successful posted.");
                             resetField();
+                            $('#loading').hide();
+                            $('#overlay').hide();
                             $rootScope.$broadcast('refreshPost');
                         }
                     });

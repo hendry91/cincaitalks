@@ -63,23 +63,6 @@ define(['services/services'],
                     update : { method: 'PUT', params: { object : ""} }
                 });
 
-                var token = $resource("https://api.imgur.com/oauth2/token", null, {
-                    gettoken: {method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}}
-                });
-
-                  //EXAMPLE : 
-				  //TRY http://52.2.24.172:9090/users open in browser
-				  //TRY http://52.2.24.172:9090/users/?{"id":"9b7361d4486408f4"} open in browser
-				  
-//                var xxxRequest = $resource(prefixurl + "/xxx/:object/?:id", null, {
-//					list: { method: 'GET', params: {}, isArray: true, transformResponse: transformResponse },
-//					listbyid: { method: 'GET', params: { id:"" }, isArray: true, transformResponse: transformResponse },
-//					create: { method: 'POST', params: { object: ""} },
-//					update: { method: 'PUT', params: { object : ""} },
-//					remove: { method: 'DELETE', params: { object : ""} },
-//				});
-
-
                 //=============================== PROCESS RESPONSE =====================================================
 
                 function transformResponse(data, header) {
@@ -357,7 +340,7 @@ define(['services/services'],
 						content : attrs.content,
 						date : new Date(),
 //                      title: attrs.title,
-//						image : attrs.image,
+//						image : attrs.image
 					};
                     var type = path[type];
 					var creteComment = create.addCommentbackup({path : type}, JSON.stringify(request),
@@ -365,129 +348,11 @@ define(['services/services'],
 						function (error) { responseError(error, callback) });
                 };
 
-                function getAccess(callback) {
-                data= { client_id: "4fdec70e41b7cd7", 
-                        client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", 
-                        grant_type: "refresh_token", 
-                        refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
-                }
-                $.ajax({
-                  type: "POST",
-                  url: 'https://api.imgur.com/oauth2/token',
-                  data: $httpParamSerializerJQLike(data), 
-                  headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded' 
-                 },
-                  success: function(res) {
-                      callback(res);
-                      alert("done");
-                  },
-                  error:function(res){
-                    alert("aaa");
-                     alert(JSON.stringify(res))
-                  }
-                });
-
-
-//                    data= { client_id: "4fdec70e41b7cd7", 
-//                            client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", 
-//                            grant_type: "refresh_token", 
-//                            refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
-//                    }
-//                    delete $http.defaults.headers.common['X-Requested-With'];
-//                    $http({
-//                          url: 'https://api.imgur.com/oauth2/token',
-//                          method: 'POST',
-//                          data: $httpParamSerializerJQLike(data), 
-//                          headers: {
-//                            'Content-Type': 'application/x-www-form-urlencoded' 
-//                          }
-//                        }).success(function(response) { 
-//                            callback(response);
-//                        }).error(function(response) { 
-//                            alert(JSON.stringify(response))
-//                        });
-
-
-
-//                    data= { client_id: "4fdec70e41b7cd7", 
-//                            client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", 
-//                            grant_type: "refresh_token", 
-//                            refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
-//                    }
-
-//					var toke = token.gettoken($httpParamSerializer(data),
-//						function (success) { 
-//                        alert(JSON.stringify(success))
-//                        responseSuccess(success, null, callback) 
-//                        },
-//						function (error) { 
-//                        alert(JSON.stringify(error))
-//                        alert("nonono");
-//                        responseError(error, callback) 
-//                        });
-                };
-
-                //EXAMPLE : SRART
-//              function getxxxList(callback){
-//					var xxxList = xxxRequest.list({},
-//						function (success) { responseSuccess(success, null, callback) },
-//						function (error) { responseError(error, callback) });
-//				};
-
-//				function getxxxById(userid,callback){
-//					var request = {
-//						userid: userid,
-//						include: "getNameByID",  
-//					***if got include, deployd dashboard write event***
-//					***************************************************
-// 						if(query.include === 'getNameByID') {
-// 							dpd.users.get({id: this.id}, function(users) {
-// 								this.usersname = users.displayname;
-// 							});
-// 						});
-//					***************************************************
-//					}
-
-//					var xxxList = xxxRequest.listbyid({ id : JSON.stringify(request)},
-//						function (success) { responseSuccess(success, null, callback) },
-//						function (error) { responseError(error, callback) });
-//				};
-
-//				function createXxx(attrs,callback){
-//					var request = {
-//						userid : attrs.userid,
-//						content : attrs.content,
-//					};
-//					
-//					var xxxList = xxxRequest.create(JSON.stringify(request),
-//						function (success) { responseSuccess(success, null, callback) },
-//						function (error) { responseError(error, callback) });
-//				};
-
-//				function updateXxx(attrs,callback){
-//					var request = attrs
-//					
-//					var xxxList = xxxRequest.update(JSON.stringify(request),
-//						function (success) { responseSuccess(success, null, callback) },
-//						function (error) { responseError(error, callback) });
-//				};
-
-//				function removeXxx(id,callback){
-//					
-//					var xxxList = xxxRequest.remove({object: id},
-//						function (success) { responseSuccess(success, null, callback) },
-//						function (error) { responseError(error, callback) });
-//				};
-                 //EXAMPLE : END
-
                 //=============================== RETURN FUNCTION ====================================================
                 return {
                     //PUBLIC POST
                     GetPostbyLimit: getPostbyLimit,
                     GetPostbyUsername: getPostbyUsername,
-
-
                     CreatePost : createPost,
                     Addbackup : addbackup, 
                     UpdatePostAction : updatePostAction,
@@ -509,11 +374,7 @@ define(['services/services'],
 
                     CreateFeedback: createFeedback,
 
-                    CheckExistingUser : checkExistingUser,
-                    GetAccess:getAccess
-                    //EXAMPLE
-                    //RemovePost: removePost,
-                  
+                    CheckExistingUser : checkExistingUser
                 }
             }
         ]);

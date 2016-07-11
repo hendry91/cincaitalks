@@ -1,7 +1,7 @@
 define(['services/services'],
     function (services) {
-        services.service('authServices', ['deploydService', '$cookies', '$http',
-            function (deploydService, $cookies, $http) {
+        services.service('authServices', ['deploydService', '$cookies', '$httpParamSerializer',
+            function (deploydService, $cookies, $httpParamSerializer) {
                 var currUSER = undefined;
 
                 function getCurrentUser(callback) {
@@ -41,20 +41,20 @@ define(['services/services'],
                 }
 
                 function checkFacebookLogin(callback) {
-                     FB.getLoginStatus(function (res) {
-                         if (res.status === 'connected') {
-                             var uid = res.authResponse.userID;
-                             var accessToken = res.authResponse.accessToken;
-                             callback(res);
-                         } else if (res.status === 'not_authorized') {
-                             callback(-1);
-                             // the user is logged in to Facebook, 
-                             // but has not authenticated your app
-                         } else {
-                             callback(-1);
-                             // the user isn't logged in to Facebook.
-                         }
-                     });
+                    FB.getLoginStatus(function (res) {
+						 if (res.status === 'connected') {
+							 var uid = res.authResponse.userID;
+							 var accessToken = res.authResponse.accessToken;
+							 callback(res);
+						 } else if (res.status === 'not_authorized') {
+							 callback(-1);
+							 // the user is logged in to Facebook, 
+							 // but has not authenticated your app
+						 } else {
+							 callback(-1);
+							 // the user isn't logged in to Facebook.
+						 }
+					 });
                 }
 
                 function userDeploydLogin(attrs, callback) {
@@ -140,20 +140,25 @@ define(['services/services'],
                 }
 
                 function requestAccessToken(callback) {
-                    $http({
-                        method: 'POST',
-                        url: "https://api.imgur.com/oauth2/token",
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        transformRequest: function (obj) {
-                            var str = [];
-                            for (var p in obj)
-                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                            return str.join("&");
+
+                    data = { client_id: "4fdec70e41b7cd7",
+                        client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163",
+                        grant_type: "refresh_token",
+                        refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a"
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: 'https://api.imgur.com/oauth2/token',
+                        data: $httpParamSerializer(data),
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
                         },
-                        data: { client_id: "4fdec70e41b7cd7", client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", grant_type: "refresh_token", refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" }
-                    }).success(function (e) {
-                        callback(e);
-                    }).error(function (e) {
+                        success: function (res) {
+                            callback(res);
+                        },
+                        error: function (res) {
+                            callback(-1);
+                        }
                     });
                 }
 
