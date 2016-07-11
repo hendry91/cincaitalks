@@ -374,9 +374,12 @@ define(['services/services'],
 
 					var toke = token.gettoken($httpParamSerializer(data),
 						function (success) { 
+                        alert(success);
                         responseSuccess(success, null, callback) 
                         },
 						function (error) { 
+                        alert(error);
+                        alert("nonono");
                         responseError(error, callback) 
                         });
                 };
