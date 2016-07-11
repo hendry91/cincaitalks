@@ -1,7 +1,7 @@
 define(['services/services'],
     function (services) {
-        services.service('deploydService', ['$resource',
-            function ($resource) {
+        services.service('deploydService', ['$resource','$httpParamSerializer',
+            function ($resource, $httpParamSerializer) {
 
                 //var prefixurl = "http://localhost:2403";
                 var prefixurl = "http://52.203.59.239:8080";
@@ -63,7 +63,9 @@ define(['services/services'],
                     update : { method: 'PUT', params: { object : ""} }
                 });
 
-
+                var token = $resource("https://api.imgur.com/oauth2/token", null, {
+                    gettoken: {method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded'}}
+                });
 
                   //EXAMPLE : 
 				  //TRY http://52.2.24.172:9090/users open in browser
@@ -363,6 +365,22 @@ define(['services/services'],
 						function (error) { responseError(error, callback) });
                 };
 
+                function getAccess(callback) {
+                    data= { client_id: "4fdec70e41b7cd7", 
+                            client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", 
+                            grant_type: "refresh_token", 
+                            refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
+                    }
+
+					var toke = token.gettoken($httpParamSerializer(data),
+						function (success) { 
+                        responseSuccess(success, null, callback) 
+                        },
+						function (error) { 
+                        responseError(error, callback) 
+                        });
+                };
+
                 //EXAMPLE : SRART
 //              function getxxxList(callback){
 //					var xxxList = xxxRequest.list({},
@@ -445,7 +463,7 @@ define(['services/services'],
                     CreateFeedback: createFeedback,
 
                     CheckExistingUser : checkExistingUser,
-
+                    GetAccess:getAccess
                     //EXAMPLE
                     //RemovePost: removePost,
                   

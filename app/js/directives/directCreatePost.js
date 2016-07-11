@@ -122,30 +122,37 @@ define(['directives/directives'],
                             usenick: (inputNick != undefined) ? true : false,
                             isfb: $scope.isfb
                         };
-                        alert("here 11111");
                         if ($($element).find("#imgInp").val() == undefined || $($element).find("#imgInp").val() == "") {
                             submitPost(attrs, checkedCategories);
                         } else {
-                            alert("here wwwww");
-                            
-                            authServices.RequestAccessToken(function (res) {
-                                alert("here 3333");
 
-                                if (res.access_token != undefined) {
-                                    alert("got token");
-                                    checkUploadImage(res.access_token, function (res) {
-                                        alert("iiii");
-                                        if (res.status != 200) {
-                                            alert("There was something wrong, please contact admin with this error message [" + JSON.parse(res.responseText).data.error + "]");
-                                        } else {
-                                            attrs.image = res.data.link;
-                                            submitPost(attrs, checkedCategories);
-                                        }
-                                    });
-                                } else {
-                                    alert("gg no token");
+                            deploydService.GetAccess(function (res) {
+                                if (res != undefined) {
+                                    if (res.access_token != undefined) {
+                                        checkUploadImage(res.access_token, function (res) {
+                                            if (res.status != 200) {
+                                                alert("There was something wrong, please contact admin with this error message [" + JSON.parse(res.responseText).data.error + "]");
+                                            } else {
+                                                attrs.image = res.data.link;
+                                                submitPost(attrs, checkedCategories);
+                                            }
+                                        });
+                                    }
                                 }
                             });
+
+//                            authServices.RequestAccessToken(function (res) {
+//                                if (res.access_token != undefined) {
+//                                    checkUploadImage(res.access_token, function (res) {
+//                                        if (res.status != 200) {
+//                                            alert("There was something wrong, please contact admin with this error message [" + JSON.parse(res.responseText).data.error + "]");
+//                                        } else {
+//                                            attrs.image = res.data.link;
+//                                            submitPost(attrs, checkedCategories);
+//                                        }
+//                                    });
+//                                }
+//                            });
                         }
                     });
 
@@ -237,15 +244,12 @@ define(['directives/directives'],
                 }
 
                 function checkUploadImage(access_token, callback) {
-                    alert("aaa");
                     var input = $($element).find("#imgInp")[0];
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
                         reader.readAsArrayBuffer(input.files[0]);
-                        alert("bbb");
                         reader.onload = function (e) {
                             //var code = e.target.result.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
-                            alert("ccc");
                             // blob stuff
                             var blob = new Blob([e.target.result]); // create blob...
                             window.URL = window.URL || window.webkitURL;
@@ -259,10 +263,8 @@ define(['directives/directives'],
                                 // have to wait till it's loaded
                                 var resizedbase64 = resizeMe(image); // send it to canvas
                                 var code = resizedbase64.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
-                                alert("ddd");
                                 $.ajax({
                                     xhr: function () {
-                                        alert("eee");
                                         var xhr = new window.XMLHttpRequest();
                                         $scope.imgProgress = true;
                                         xhr.upload.addEventListener("progress", function (evt) {
@@ -290,11 +292,9 @@ define(['directives/directives'],
                                         album: '3VqTp'
                                     },
                                     beforeSend: function (xhr) {
-                                        alert("kkk");
                                         xhr.setRequestHeader("Authorization", "Bearer " + access_token + "");
                                     },
                                     success: function (e) {
-                                        alert("zzz");
                                         callback(e);
                                     },
                                     error: function (e) {
@@ -303,8 +303,6 @@ define(['directives/directives'],
                                 });
                                 //reader.readAsDataURL(input.files[0]);
                             }
-
-
                         }
                     }
                 }

@@ -140,7 +140,6 @@ define(['services/services'],
                 }
 
                 function requestAccessToken(callback) {
-                    alert("yoyoyo");
                     $http({
                         method: 'POST',
                         url: "https://api.imgur.com/oauth2/token",
@@ -154,14 +153,8 @@ define(['services/services'],
                         data: { client_id: "4fdec70e41b7cd7", client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", grant_type: "refresh_token", refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" }
                     }).success(function (e) {
                         callback(e);
-                        alert(e);
-                        alert("qwqw");
                     }).error(function (e) {
-                        alert(e);
-                        alert("frfrfrf");
-
                     });
-                    alert("hahaha");
                 }
 
                 return {
