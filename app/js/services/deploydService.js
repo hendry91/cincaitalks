@@ -366,24 +366,47 @@ define(['services/services'],
                 };
 
                 function getAccess(callback) {
-                    data= { client_id: "4fdec70e41b7cd7", 
-                            client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", 
-                            grant_type: "refresh_token", 
-                            refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
-                    }
+                data= { client_id: "4fdec70e41b7cd7", 
+                        client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", 
+                        grant_type: "refresh_token", 
+                        refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
+                }
+                $.ajax({
+                  type: "POST",
+                  url: 'https://api.imgur.com/oauth2/token',
+                  data: $httpParamSerializerJQLike(data), 
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+                 },
+                  success: function(res) {
+                      callback(res);
+                      alert("done");
+                  },
+                  error:function(res){
+                    alert("aaa");
+                     alert(JSON.stringify(res))
+                  }
+                });
 
-                    $http({
-                          url: 'https://api.imgur.com/oauth2/token',
-                          method: 'POST',
-                          data: $httpParamSerializerJQLike(data), 
-                          headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded' 
-                          }
-                        }).success(function(response) { 
-                            callback(response);
-                        }).error(function(response) { 
-                            alert(JSON.stringify(response))
-                        });
+
+//                    data= { client_id: "4fdec70e41b7cd7", 
+//                            client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", 
+//                            grant_type: "refresh_token", 
+//                            refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
+//                    }
+//                    delete $http.defaults.headers.common['X-Requested-With'];
+//                    $http({
+//                          url: 'https://api.imgur.com/oauth2/token',
+//                          method: 'POST',
+//                          data: $httpParamSerializerJQLike(data), 
+//                          headers: {
+//                            'Content-Type': 'application/x-www-form-urlencoded' 
+//                          }
+//                        }).success(function(response) { 
+//                            callback(response);
+//                        }).error(function(response) { 
+//                            alert(JSON.stringify(response))
+//                        });
 
 
 
