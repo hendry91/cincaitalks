@@ -122,11 +122,14 @@ define(['directives/directives'],
                             usenick: (inputNick != undefined) ? true : false,
                             isfb: $scope.isfb
                         };
-
+                        alert("here 11111");
                         if ($($element).find("#imgInp").val() == undefined || $($element).find("#imgInp").val() == "") {
                             submitPost(attrs, checkedCategories);
                         } else {
+                            alert("here wwwww");
+                            
                             authServices.RequestAccessToken(function (res) {
+                                alert("here 3333");
 
                                 if (res.access_token != undefined) {
                                     alert("got token");
