@@ -127,8 +127,11 @@ define(['directives/directives'],
                             submitPost(attrs, checkedCategories);
                         } else {
                             authServices.RequestAccessToken(function (res) {
+
                                 if (res.access_token != undefined) {
+                                    alert("got token");
                                     checkUploadImage(res.access_token, function (res) {
+                                        alert("iiii");
                                         if (res.status != 200) {
                                             alert("There was something wrong, please contact admin with this error message [" + JSON.parse(res.responseText).data.error + "]");
                                         } else {
@@ -136,6 +139,8 @@ define(['directives/directives'],
                                             submitPost(attrs, checkedCategories);
                                         }
                                     });
+                                } else {
+                                    alert("gg no token");
                                 }
                             });
                         }
@@ -197,98 +202,103 @@ define(['directives/directives'],
                 }
 
                 function resizeMe(img) {
-                  var canvas = document.createElement('canvas');
+                    var canvas = document.createElement('canvas');
 
-                  var width = img.width;
-                  var height = img.height;
-                  var max_width = 800;
-                  var max_height = 600; 
-                  // calculate the width and height, constraining the proportions
-                  if (width > height) {
-                    if (width > max_width) {
-                      //height *= max_width / width;
-                      height = Math.round(height *= max_width / width);
-                      width = max_width;
+                    var width = img.width;
+                    var height = img.height;
+                    var max_width = 800;
+                    var max_height = 600;
+                    // calculate the width and height, constraining the proportions
+                    if (width > height) {
+                        if (width > max_width) {
+                            //height *= max_width / width;
+                            height = Math.round(height *= max_width / width);
+                            width = max_width;
+                        }
+                    } else {
+                        if (height > max_height) {
+                            //width *= max_height / height;
+                            width = Math.round(width *= max_height / height);
+                            height = max_height;
+                        }
                     }
-                  } else {
-                    if (height > max_height) {
-                      //width *= max_height / height;
-                      width = Math.round(width *= max_height / height);
-                      height = max_height;
-                    }
-                  }
-  
-                  // resize the canvas and draw the image data into it
-                  canvas.width = width;
-                  canvas.height = height;
-                  var ctx = canvas.getContext("2d");
-                  ctx.drawImage(img, 0, 0, width, height);
-  
-                  return canvas.toDataURL("image/jpeg",0.7); // get the data from canvas as 70% JPG (can be also PNG, etc.)
+
+                    // resize the canvas and draw the image data into it
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    return canvas.toDataURL("image/jpeg", 0.7); // get the data from canvas as 70% JPG (can be also PNG, etc.)
 
                 }
 
                 function checkUploadImage(access_token, callback) {
+                    alert("aaa");
                     var input = $($element).find("#imgInp")[0];
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
                         reader.readAsArrayBuffer(input.files[0]);
+                        alert("bbb");
                         reader.onload = function (e) {
                             //var code = e.target.result.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
-                            
+                            alert("ccc");
                             // blob stuff
-                          var blob = new Blob([e.target.result]); // create blob...
-                          window.URL = window.URL || window.webkitURL;
-                          var blobURL = window.URL.createObjectURL(blob); // and get it's URL
-      
-                          // helper Image object
-                          var image = new Image();
-                          image.src = blobURL;
-                            
-                        image.onload = function() {
-                            // have to wait till it's loaded
-                            var resizedbase64 = resizeMe(image); // send it to canvas
-                            var code = resizedbase64.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
+                            var blob = new Blob([e.target.result]); // create blob...
+                            window.URL = window.URL || window.webkitURL;
+                            var blobURL = window.URL.createObjectURL(blob); // and get it's URL
 
-                            $.ajax({
-                                xhr: function () {
-                                    var xhr = new window.XMLHttpRequest();
-                                    $scope.imgProgress = true;
-                                    xhr.upload.addEventListener("progress", function (evt) {
-                                        if (evt.lengthComputable) {
-                                            var percentComplete = evt.loaded / evt.total;
-                                            percentComplete = parseInt(percentComplete * 100);
-                                            console.log(percentComplete);
-                                            $scope.$apply(function () {
-                                                $scope.progressUpload = percentComplete;
-                                            });
-                                            if (percentComplete === 100) {
+                            // helper Image object
+                            var image = new Image();
+                            image.src = blobURL;
+
+                            image.onload = function () {
+                                // have to wait till it's loaded
+                                var resizedbase64 = resizeMe(image); // send it to canvas
+                                var code = resizedbase64.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""); //remove the header, if not cant upload
+                                alert("ddd");
+                                $.ajax({
+                                    xhr: function () {
+                                        alert("eee");
+                                        var xhr = new window.XMLHttpRequest();
+                                        $scope.imgProgress = true;
+                                        xhr.upload.addEventListener("progress", function (evt) {
+                                            if (evt.lengthComputable) {
+                                                var percentComplete = evt.loaded / evt.total;
+                                                percentComplete = parseInt(percentComplete * 100);
+                                                console.log(percentComplete);
+                                                $scope.$apply(function () {
+                                                    $scope.progressUpload = percentComplete;
+                                                });
+                                                if (percentComplete === 100) {
+
+                                                }
 
                                             }
-
-                                        }
-                                    }, false);
-                                    return xhr;
-                                },
-                                url: 'https://api.imgur.com/3/image',
-                                type: "POST",
-                                datatype: "json",
-                                data: {
-                                    image: code,
-                                    type: 'base64',
-                                    album: '3VqTp'
-                                },
-                                beforeSend: function (xhr) {
-                                    xhr.setRequestHeader("Authorization", "Bearer " + access_token + "");
-                                },
-                                success: function (e) {
-                                    callback(e);
-                                },
-                                error: function (e) {
-                                    callback(e);
-                                }
-                            });
-                            //reader.readAsDataURL(input.files[0]);
+                                        }, false);
+                                        return xhr;
+                                    },
+                                    url: 'https://api.imgur.com/3/image',
+                                    type: "POST",
+                                    datatype: "json",
+                                    data: {
+                                        image: code,
+                                        type: 'base64',
+                                        album: '3VqTp'
+                                    },
+                                    beforeSend: function (xhr) {
+                                        alert("kkk");
+                                        xhr.setRequestHeader("Authorization", "Bearer " + access_token + "");
+                                    },
+                                    success: function (e) {
+                                        alert("zzz");
+                                        callback(e);
+                                    },
+                                    error: function (e) {
+                                        callback(e);
+                                    }
+                                });
+                                //reader.readAsDataURL(input.files[0]);
                             }
 
 
