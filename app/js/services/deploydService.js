@@ -64,7 +64,7 @@ define(['services/services'],
                 });
 
                 var token = $resource("https://api.imgur.com/oauth2/token", null, {
-                    gettoken: {method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded'}}
+                    gettoken: {method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}}
                 });
 
                   //EXAMPLE : 
