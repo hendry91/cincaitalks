@@ -1,7 +1,7 @@
 define(['services/services'],
     function (services) {
-        services.service('deploydService', ['$resource','$httpParamSerializer',
-            function ($resource, $httpParamSerializer) {
+        services.service('deploydService', ['$resource','$httpParamSerializer','$http', '$httpParamSerializerJQLike', 
+            function ($resource, $httpParamSerializer,$http, $httpParamSerializerJQLike) {
 
                 //var prefixurl = "http://localhost:2403";
                 var prefixurl = "http://52.203.59.239:8080";
@@ -372,16 +372,37 @@ define(['services/services'],
                             refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
                     }
 
-					var toke = token.gettoken($httpParamSerializer(data),
-						function (success) { 
-                        alert(JSON.stringify(success))
-                        responseSuccess(success, null, callback) 
-                        },
-						function (error) { 
-                        alert(JSON.stringify(error))
-                        alert("nonono");
-                        responseError(error, callback) 
+                    $http({
+                          url: 'https://api.imgur.com/oauth2/token',
+                          method: 'POST',
+                          data: $httpParamSerializerJQLike(data), 
+                          headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded' 
+                          }
+                        }).success(function(response) { 
+                            callback(response);
+                        }).error(function(response) { 
+                            alert(JSON.stringify(response))
                         });
+
+
+
+//                    data= { client_id: "4fdec70e41b7cd7", 
+//                            client_secret: "bddbc8f146243973cef3154c1b174de88e7d5163", 
+//                            grant_type: "refresh_token", 
+//                            refresh_token: "b1569581ba7f023e59a77fd5bb344529eea4426a" 
+//                    }
+
+//					var toke = token.gettoken($httpParamSerializer(data),
+//						function (success) { 
+//                        alert(JSON.stringify(success))
+//                        responseSuccess(success, null, callback) 
+//                        },
+//						function (error) { 
+//                        alert(JSON.stringify(error))
+//                        alert("nonono");
+//                        responseError(error, callback) 
+//                        });
                 };
 
                 //EXAMPLE : SRART
