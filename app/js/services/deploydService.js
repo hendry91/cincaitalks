@@ -374,11 +374,11 @@ define(['services/services'],
 
 					var toke = token.gettoken($httpParamSerializer(data),
 						function (success) { 
-                        alert(success);
+                        alert(JSON.stringify(success))
                         responseSuccess(success, null, callback) 
                         },
 						function (error) { 
-                        alert(error);
+                        alert(JSON.stringify(error))
                         alert("nonono");
                         responseError(error, callback) 
                         });
