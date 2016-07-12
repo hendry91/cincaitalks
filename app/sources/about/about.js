@@ -65,21 +65,21 @@ define(['directives/directives'],
 '<div class="jumbotron">' +
 '<h1 class="display-3 aboutFont">Hello</h1>' +
 '<h1 class="display-3 aboutFont">TARUCIAN!</h1>' +
-'<p class="lead">This is a non-profit organization website for taruc communication purpose.</p>' +
+//'<p class="lead">This is a non-profit organization website for taruc communication purpose.</p>' +
 '<hr class="m-y-2">' +
 
-'<div style="text-align: left;"><p>Cincaitalks.com privacy rules: </p></div>' +
+'<div style="text-align: left;"><p style="font-weight: bolder;font-size:large;">Cincaitalks.com things you need to know : </p></div>' +
 '<div style="text-align: left;"><i class="fa fa-star-o" aria-hidden="true" style="color:red" data-toggle="tooltip" data-placement="bottom" title="This star mean the author use custom nickname to post."></i> : This star mean the author use custom nickname to post.</small></p></div>' +
-'<div style="text-align: left;"><p>All name with <span style="color:#a8168f">purple color</span> (eg:posted by : <a href="https://www.facebook.com/confessionstarc/" target="_blank" style="color:#a8168f">TARUC</a> ) mean posted/commented with connected facebook user.' +
-' When the facebook user didnt use nickname(hide the real name) to post/comment then only will shown this <span style="color:#a8168f">color</span> with hyperlink to allow people to open their facebook.' +
-' If the facebook user used nickname to post/comment, the name only will show with normal(no color, no hyperlink), nobody will know the poster/commenter facebook.</p></div>' +
+'<div style="text-align: left;"><p>All name with <span style="color:#a8168f">purple color</span> tag  means user posted/commented with connected facebook user.' +
+' ( Only when the facebook user didnt use nickname[hide the real name] to post/comment ).This allow people to view their facebook profile with hyperlink clicked.' +
+'<p>( Eg , posted by : <a href="https://www.facebook.com/confessionstarc/" target="_blank" style="color:#a8168f">TARUC</a> )</p></p></div>' +
 
 '<hr class="m-y-2">' +
-'<p>If you have any feedback for us to improving this website, you may proceed to submit the form below.</p>' +
+'<p>If you have any feedback for us to improve this website, PLEASE do not hesitate to submit the form below.</p>' +
 '<div class="form-group">' +
 '<label for="comment">Comment:</label>' +
-'<textarea class="form-control" rows="5" id="comment" placeholder="Please login to submit this form to enjoy high priority. ' +
-'You will still able to submit this form without login, but it may having the high trafic due to some people spam/sending unused feedback to the web. Thanks"></textarea>' +
+'<textarea class="form-control" rows="5" id="comment" placeholder="Please login to submit this form to show us your sincere. ' +
+'You will still able to submit this form without login, but it may having high traffic due to some people spam/sending unused feedback to the web. Thanks"></textarea>' +
 '<div class="help-block with-errors"></div>' +
 '<button class="btn btn-primary btnSubmit" type="submit">Submit</button>' +
 '</div>' +
