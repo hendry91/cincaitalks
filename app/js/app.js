@@ -8,8 +8,7 @@ define(['angular',
         'directives/directives',
         'angularloadingbar'],
         function (angular) {
-            var app = angular.module('cincaiTalk',
-				 ['ngRoute', 'services', 'filters', 'controllers', 'directives', 'ui.router', 'angular-loading-bar']);
+            var app = angular.module('cincaiTalk',['ngRoute', 'services', 'filters', 'controllers', 'directives', 'ui.router', 'angular-loading-bar']);
             app.config(['$routeProvider', '$stateProvider', '$urlRouterProvider', '$httpProvider',
             function ($routeProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
 
