@@ -21,13 +21,13 @@ require.config({
         angularstorage: '../lib/angular/angular-local-storage.min',
         angularcookie: '../lib/angular/angular-cookies.min',
         angularsanitize: '../lib/angular/angular-sanitize.min',
-        angulartranslate: '../lib/angular/angular-translate.min',
-        angulartranslateloaderstaticfiles: '../lib/angular/angular-translate-loader-static-files.min',
+//        angulartranslate: '../lib/angular/angular-translate.min',
+//        angulartranslateloaderstaticfiles: '../lib/angular/angular-translate-loader-static-files.min',
         angularuiroute: '../lib/angular/angular-ui-router.min',
         angularloadingbar: '../lib/angular/loading-bar.min',
         jquery: '../lib/jquery/jquery.min',
         autogrow: '../lib/jquery/jquery.ns-autogrow.min',
-        jqueryui: '../lib/jqueryui/jquery-ui.min',
+        //jqueryui: '../lib/jqueryui/jquery-ui.min',
         domReady: '../lib/requirejs/domReady',
         bootstrap: '../lib/bootstrap/bootstrap.min',
         masonry: '../lib/masonry/masonry.pkgd.min',
@@ -37,7 +37,8 @@ require.config({
     },
     shim: {
         angular: {
-            deps: ['jquery', 'jqueryui'],
+            deps: ['jquery'],
+            //deps: ['jquery', 'jqueryui'],
             exports: 'angular'
         },
         angularroute: {
@@ -55,12 +56,12 @@ require.config({
         angularsanitize: {
             deps: ['angular']
         },
-        angulartranslate: {
-            deps: ['angular']
-        },
-        angulartranslateloaderstaticfiles: {
-            deps: ['angular', 'angulartranslate']
-        },
+//        angulartranslate: {
+//            deps: ['angular']
+//        },
+//        angulartranslateloaderstaticfiles: {
+//            deps: ['angular', 'angulartranslate']
+//        },
         angularloadingbar: {
             deps: ['angular']
         },
@@ -70,10 +71,14 @@ require.config({
         },
         
         bootstrap: {
-            deps: ['jquery', 'jqueryui', 'angular', 'masonry']
+            deps: ['jquery', 'angular', 'masonry']
+            //deps: ['jquery', 'jqueryui', 'angular', 'masonry']
+
         },
         twbsPagination: {
-            deps: ['jquery', 'jqueryui', 'angular']
+            deps: ['jquery', 'angular']
+            //deps: ['jquery', 'jqueryui', 'angular']
+
         },
         autogrow: {
             deps: ['jquery']
